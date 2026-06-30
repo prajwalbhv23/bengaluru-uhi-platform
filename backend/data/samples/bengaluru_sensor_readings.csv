@@ -1,0 +1,51 @@
+name,latitude,longitude,lst,ndvi,ndbi,land_cover
+Whitefield Station #1 (Commercial),12.9579,77.60254,43.04,0.098,0.309,Commercial
+Electronic City Station #1 (Commercial),13.01699,77.55779,40.83,0.134,0.323,Commercial
+Hebbal Station #1 (Industrial),13.04576,77.61712,41.12,0.08,0.509,Industrial
+Majestic Station #1 (Residential),12.98478,77.5957,30.65,0.175,-0.07,Residential
+KR Puram Station #1 (Commercial),12.99089,77.52542,38.11,0.015,0.22,Commercial
+Yelahanka Station #1 (Industrial),12.97713,77.65048,43.2,-0.05,0.364,Industrial
+Marathahalli Station #1 (Industrial),12.95759,77.60535,45.48,0.08,0.537,Industrial
+Indiranagar Station #1 (Commercial),12.93684,77.62275,40.23,0.103,0.414,Commercial
+Jayanagar Station #1 (Residential),12.94099,77.5439,30.57,0.212,0.134,Residential
+Koramangala Station #1 (Commercial),12.9567,77.62622,40.66,-0.046,0.352,Commercial
+MG Road Station #1 (Commercial),12.95254,77.51993,41.52,0.136,0.255,Commercial
+Cubbon Park Station #1 (Park),13.02668,77.5597,27.3,0.781,-0.297,Park
+Lalbagh Station #1 (Park),12.98393,77.61232,27.6,0.751,-0.473,Park
+Bannerghatta Station #1 (Park),12.96638,77.6033,24.87,0.57,-0.488,Park
+HSR Layout Station #1 (Commercial),12.96277,77.55276,42.86,0.008,0.402,Commercial
+BTM Layout Station #1 (Residential),12.95379,77.55178,29.51,0.297,0.12,Residential
+Malleshwaram Station #1 (Industrial),13.00471,77.59845,42.6,0.074,0.481,Industrial
+Rajajinagar Station #1 (Residential),12.95551,77.55915,34.34,0.359,0.106,Residential
+Sadashivanagar Station #1 (Residential),12.89543,77.6148,32.3,0.173,0.062,Residential
+Bellandur Station #1 (Water),13.01887,77.55485,20.49,-0.289,-0.671,Water
+Whitefield Station #2 (Commercial),12.9312,77.59059,41.81,0.113,0.326,Commercial
+Electronic City Station #2 (Commercial),12.96152,77.593,41.93,0.098,0.282,Commercial
+Hebbal Station #2 (Residential),13.01852,77.64328,34.21,0.264,-0.099,Residential
+Majestic Station #2 (Residential),12.92331,77.59079,32.12,0.354,0.142,Residential
+KR Puram Station #2 (Industrial),12.97055,77.54493,41.88,-0.115,0.347,Industrial
+Yelahanka Station #2 (Industrial),12.94784,77.5371,47.23,0.06,0.589,Industrial
+Marathahalli Station #2 (Residential),12.94776,77.5604,31.14,0.298,0.052,Residential
+Indiranagar Station #2 (Commercial),12.98197,77.60494,38.7,0.012,0.351,Commercial
+Jayanagar Station #2 (Industrial),13.00751,77.57274,43.81,-0.144,0.544,Industrial
+Koramangala Station #2 (Industrial),12.91383,77.6095,45.79,-0.141,0.389,Industrial
+MG Road Station #2 (Commercial),12.98199,77.60902,38.21,-0.023,0.279,Commercial
+Cubbon Park Station #2 (Park),12.97628,77.58017,26.28,0.537,-0.496,Park
+Lalbagh Station #2 (Park),12.9911,77.55708,28.37,0.529,-0.487,Park
+Bannerghatta Station #2 (Park),12.95308,77.52213,26.59,0.75,-0.43,Park
+HSR Layout Station #2 (Industrial),12.98538,77.56309,46.85,-0.06,0.575,Industrial
+BTM Layout Station #2 (Commercial),12.99676,77.61678,41.06,-0.042,0.24,Commercial
+Malleshwaram Station #2 (Commercial),12.96165,77.52597,39.57,0.078,0.249,Commercial
+Rajajinagar Station #2 (Residential),12.96097,77.59142,34.09,0.344,0.138,Residential
+Sadashivanagar Station #2 (Industrial),12.90906,77.61968,40.5,-0.058,0.533,Industrial
+Bellandur Station #2 (Water),12.95668,77.56316,20.42,-0.135,-0.519,Water
+Whitefield Station #3 (Commercial),12.95905,77.59457,38.79,0.126,0.21,Commercial
+Electronic City Station #3 (Commercial),12.91711,77.56905,37.66,-0.04,0.243,Commercial
+Hebbal Station #3 (Commercial),12.99287,77.56973,40.3,0.109,0.265,Commercial
+Majestic Station #3 (Industrial),12.92883,77.55552,46.6,-0.012,0.464,Industrial
+KR Puram Station #3 (Commercial),12.9913,77.63468,38.29,0.065,0.305,Commercial
+Yelahanka Station #3 (Industrial),13.00398,77.55965,45.64,-0.039,0.333,Industrial
+Marathahalli Station #3 (Commercial),13.02846,77.54423,39.24,0.077,0.361,Commercial
+Indiranagar Station #3 (Commercial),12.95578,77.60555,42.35,0.029,0.322,Commercial
+Jayanagar Station #3 (Commercial),13.01982,77.57293,43.15,0.005,0.288,Commercial
+Koramangala Station #3 (Residential),12.93577,77.55491,33.94,0.241,0.057,Residential

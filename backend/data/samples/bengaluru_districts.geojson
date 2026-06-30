@@ -1,0 +1,195 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Peenya Sector (North-West)",
+        "lst": 44.5,
+        "ndvi": 0.04,
+        "ndbi": 0.55,
+        "land_cover": "Industrial",
+        "risk_level": "Critical"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.49,
+              13.01
+            ],
+            [
+              77.54,
+              13.05
+            ],
+            [
+              77.53,
+              13.01
+            ],
+            [
+              77.5,
+              12.99
+            ],
+            [
+              77.49,
+              13.01
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Whitefield Corridor (East)",
+        "lst": 41.8,
+        "ndvi": 0.08,
+        "ndbi": 0.42,
+        "land_cover": "Commercial",
+        "risk_level": "High"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.72,
+              12.94
+            ],
+            [
+              77.78,
+              12.98
+            ],
+            [
+              77.76,
+              12.93
+            ],
+            [
+              77.73,
+              12.92
+            ],
+            [
+              77.72,
+              12.94
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Majestic Core (Central)",
+        "lst": 39.5,
+        "ndvi": 0.12,
+        "ndbi": 0.38,
+        "land_cover": "Commercial",
+        "risk_level": "High"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.56,
+              12.96
+            ],
+            [
+              77.59,
+              12.98
+            ],
+            [
+              77.58,
+              12.95
+            ],
+            [
+              77.55,
+              12.94
+            ],
+            [
+              77.56,
+              12.96
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Cubbon / Lalbagh Canopy",
+        "lst": 26.2,
+        "ndvi": 0.72,
+        "ndbi": -0.32,
+        "land_cover": "Park",
+        "risk_level": "Low"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.585,
+              12.962
+            ],
+            [
+              77.605,
+              12.982
+            ],
+            [
+              77.595,
+              12.952
+            ],
+            [
+              77.575,
+              12.942
+            ],
+            [
+              77.585,
+              12.962
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "HSR / Koramangala (South)",
+        "lst": 34.6,
+        "ndvi": 0.28,
+        "ndbi": 0.15,
+        "land_cover": "Residential",
+        "risk_level": "Medium"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.61,
+              12.91
+            ],
+            [
+              77.66,
+              12.94
+            ],
+            [
+              77.64,
+              12.9
+            ],
+            [
+              77.62,
+              12.89
+            ],
+            [
+              77.61,
+              12.91
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
