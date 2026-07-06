@@ -70,7 +70,7 @@ const AIAssistant = ({ selectedLocation }) => {
       const assistantMsg = { role: 'assistant', content: response.data.answer, timestamp: new Date().toISOString() };
       setMessages(prev => [...prev, assistantMsg]);
     } catch (e) {
-      setError("AI Engine is offline. Verify that the FastAPI backend server is running.");
+      setError("Backend server unavailable.");
     } finally {
       setLoading(false);
     }

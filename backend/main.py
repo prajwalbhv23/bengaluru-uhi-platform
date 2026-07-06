@@ -1,3 +1,4 @@
+import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,16 +11,31 @@ from routes import upload, predict, recommend, report, dashboard, map, history, 
 # Initialize database schemas
 models.Base.metadata.create_all(bind=engine)
 
+# Auto-seed database with Bengaluru default dataset on startup if database has no records
+from seed_db import seed
+try:
+    seed()
+except Exception as e:
+    print(f"Auto-seeding database failed: {e}")
+
 app = FastAPI(
     title="Bengaluru Urban Heat Island Intelligence Platform API",
     description="Bengaluru climate intelligence, geospatial ML analytics, and smart city adaptation recommendation server",
     version="1.0.0"
 )
 
-# Enable CORS for Vite frontend
+# Enable CORS with env configuration (no wildcards in production)
+allowed_origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
+origins_env = os.getenv("ALLOWED_ORIGINS")
+if origins_env:
+    allowed_origins.extend([o.strip() for o in origins_env.split(",") if o.strip()])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, restrict to frontend domain
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

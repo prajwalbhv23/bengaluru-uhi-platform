@@ -7,11 +7,13 @@ import {
   Percent,
   Sliders,
   Layers,
-  Sparkles
+  Sparkles,
+  Terminal
 } from 'lucide-react';
 import { predictAPI } from '../utils/api';
+import UploadPanel from './UploadPanel';
 
-const Settings = () => {
+const Settings = ({ onUploadSuccess }) => {
   const [threshold, setThreshold] = useState(35);
   const [estimators, setEstimators] = useState(100);
   const [testSplit, setTestSplit] = useState(20);
@@ -196,6 +198,18 @@ const Settings = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Developer Tools - Import New Dataset */}
+      <div className="p-6 rounded-2xl glass-panel border border-slate-800 flex flex-col gap-5 mt-4">
+        <div className="flex items-center gap-2 border-b border-slate-800 pb-3 text-sm font-bold text-slate-200">
+          <Terminal className="w-5 h-5 text-emerald-400" />
+          <span>DEVELOPER TOOLS: IMPORT NEW DATASET</span>
+        </div>
+        <p className="text-xs text-slate-400 leading-relaxed font-semibold">
+          Ingest advanced geospatial images (GeoTIFF) or CSV coordinate datasets containing temperature, NDVI, NDBI, canopy coverage, and population density indices.
+        </p>
+        <UploadPanel onUploadSuccess={onUploadSuccess} />
       </div>
     </div>
   );

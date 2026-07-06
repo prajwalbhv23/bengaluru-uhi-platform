@@ -11,40 +11,52 @@ import models
 from recommendation_engine.engine import AIRecommendationEngine
 
 def seed():
-    print("Rebuilding database schemas for platform_v2...")
+    print("Rebuilding database schemas for platform.db...")
     Base.metadata.create_all(bind=engine)
     
     db: Session = SessionLocal()
     
     # Check if we already have seeded data
-    existing = db.query(models.UploadDataset).filter(models.UploadDataset.filename == "Bengaluru_Sentinel2.tif").first()
+    existing = db.query(models.UploadDataset).filter(models.UploadDataset.filename == "Bangalore_UHI_Production.csv").first()
     if existing:
-        print("Database already seeded with Bengaluru_Sentinel2.tif.")
+        print("Database already seeded with Bangalore_UHI_Production.csv.")
         db.close()
         return
 
-    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "samples", "bangalore_complete_uhi.csv")
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "samples", "Bangalore_UHI_Production.csv")
     if not os.path.exists(csv_path):
-        print(f"Error: Seed file not found at {csv_path}. Please run generate_samples.py first.")
+        print(f"Error: Seed file not found at {csv_path}. Please generate it first.")
         db.close()
         return
         
     print(f"Reading seed coordinates from {csv_path}...")
     predictions = []
-    with open(csv_path, 'r') as f:
+    with open(csv_path, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
+            lst_val = float(row["lst"])
+            ndvi_val = float(row["ndvi"])
+            ndbi_val = float(row["ndbi"])
+            
+            # Predict risk and growth prediction
+            risk_score = min(100.0, max(0.0, (lst_val - 20.0) / 28.0 * 100.0))
+            risk_lvl = "Critical" if lst_val >= 41.0 else "High" if lst_val >= 35.0 else "Medium" if lst_val >= 28.0 else "Low"
+            growth = max(0.1, round((ndbi_val - ndvi_val) * 1.2 + 0.8, 2))
+            
             predictions.append({
                 "name": row["name"],
+                "ward": row["ward"],
                 "latitude": float(row["latitude"]),
                 "longitude": float(row["longitude"]),
-                "lst": float(row["lst"]),
-                "ndvi": float(row["ndvi"]),
-                "ndbi": float(row["ndbi"]),
+                "lst": lst_val,
+                "ndvi": ndvi_val,
+                "ndbi": ndbi_val,
+                "tree_canopy": float(row["tree_canopy"]),
+                "population_density": float(row["population_density"]),
                 "land_cover": row["land_cover"],
-                "risk_score": float(row["lst"]) * 2.0, # basic score mapping
-                "risk_level": "Critical" if float(row["lst"]) >= 42.0 else "High" if float(row["lst"]) >= 35.0 else "Medium" if float(row["lst"]) >= 28.0 else "Low",
-                "growth_prediction": float(row["lst"]) + 1.2
+                "risk_score": round(risk_score, 1),
+                "risk_level": risk_lvl,
+                "growth_prediction": growth
             })
             
     # Calculate dataset statistics
@@ -56,10 +68,10 @@ def seed():
     water_body_coverage = (water_count / len(predictions)) * 100
     heat_island_intensity = max_temp - min_temp
     
-    print("Creating UploadDataset record for Bengaluru_Sentinel2.tif...")
+    print("Creating UploadDataset record for Bangalore_UHI_Production.csv...")
     dataset = models.UploadDataset(
-        filename="Bengaluru_Sentinel2.tif",
-        file_type="tif",
+        filename="Bangalore_UHI_Production.csv",
+        file_type="csv",
         status="Processed",
         records_count=len(predictions),
         file_path=csv_path,
@@ -74,9 +86,15 @@ def seed():
     
     print(f"Inserting {len(predictions)} hotspots and generating recommendations...")
     for pred in predictions:
+        # Calculate local humidity and heat index
+        humidity = max(15.0, min(95.0, 40.0 + pred["ndvi"] * 50.0))
+        air_temp = pred["lst"] - 3.5
+        heat_index = air_temp  # simplified model same as routes/map.py
+        
         hotspot = models.HotspotPrediction(
             dataset_id=dataset.id,
             name=pred["name"],
+            ward=pred["ward"],
             latitude=pred["latitude"],
             longitude=pred["longitude"],
             lst=pred["lst"],
@@ -84,6 +102,10 @@ def seed():
             ndbi=pred["ndbi"],
             built_up_density=round((pred["ndbi"] + 1) * 50.0, 1),
             vegetation_density=round((pred["ndvi"] + 1) * 50.0, 1),
+            tree_canopy=pred["tree_canopy"],
+            population_density=pred["population_density"],
+            humidity=round(humidity, 1),
+            heat_index=round(heat_index, 1),
             risk_score=pred["risk_score"],
             risk_level=pred["risk_level"],
             growth_prediction=pred["growth_prediction"],

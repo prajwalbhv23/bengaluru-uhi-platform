@@ -13,7 +13,7 @@ import { dashboardAPI } from './utils/api';
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [datasetId, setDatasetId] = useState(null);
-  const [datasetName, setDatasetName] = useState('Bengaluru_Sentinel2.tif');
+  const [datasetName, setDatasetName] = useState('Loading...');
   const [summary, setSummary] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   
@@ -100,7 +100,7 @@ function App() {
       case 'reports':
         return <Reports datasetId={datasetId} selectedLocation={selectedLocation} />;
       case 'settings':
-        return <Settings />;
+        return <Settings onUploadSuccess={handleUploadSuccess} />;
       default:
         return <Dashboard summary={summary} setActiveTab={setActiveTab} selectedLocation={selectedLocation} />;
     }

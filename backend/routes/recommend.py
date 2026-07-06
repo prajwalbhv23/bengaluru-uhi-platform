@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from models import UploadDataset, HotspotPrediction, MitigationRecommendation
+from recommendation_engine.engine import AIRecommendationEngine
 
 router = APIRouter(prefix="/api")
 

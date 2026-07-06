@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -40,6 +40,7 @@ export const recommendAPI = {
 export const mapAPI = {
   getHotspots: (datasetId) => api.get(`/api/map/hotspots${datasetId ? `?dataset_id=${datasetId}` : ''}`),
   getDistricts: (datasetId) => api.get(`/api/map/districts${datasetId ? `?dataset_id=${datasetId}` : ''}`),
+  getGrid: (datasetId) => api.get(`/api/map/grid${datasetId ? `?dataset_id=${datasetId}` : ''}`),
 };
 
 export const historyAPI = {

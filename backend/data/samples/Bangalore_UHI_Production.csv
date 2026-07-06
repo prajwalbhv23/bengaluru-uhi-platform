@@ -1,0 +1,334 @@
+name,ward,latitude,longitude,lst,ndvi,ndbi,tree_canopy,population_density,land_cover
+Whitefield IT Hub,Kadugodi Ward,12.9696,77.7496,42.8,0.08,0.52,5.2,14500,Commercial
+Whitefield Sector A,Kadugodi Ward,12.97105,77.75963,44.79,0.059,0.548,4.36,13671,Industrial
+Whitefield Sector B,Kadugodi Ward,12.96618,77.75864,40.67,0.013,0.494,2.53,15434,Commercial
+Whitefield Sector C,Kadugodi Ward,12.96136,77.7405,40.72,0.105,0.539,6.21,15423,Commercial
+Whitefield Sector D,Kadugodi Ward,12.97426,77.74445,40.6,0.072,0.532,4.86,14030,Commercial
+Whitefield Sector E,Kadugodi Ward,12.96512,77.75651,41.34,0.03,0.46,3.19,14668,Commercial
+Whitefield Sector F,Kadugodi Ward,12.97318,77.73512,43.29,0.047,0.474,3.87,13538,Industrial
+Whitefield Sector G,Kadugodi Ward,12.96677,77.75914,44.92,0.071,0.476,4.84,14509,Commercial
+Whitefield Sector H,Kadugodi Ward,12.97749,77.74161,44.63,0.149,0.459,7.95,13773,Industrial
+Marathahalli Junction,Marathahalli Ward,12.9536,77.6996,42.1,0.06,0.53,4.1,18200,Commercial
+Marathahalli Junction Sector A,Marathahalli Ward,12.94693,77.70312,42.72,0.135,0.532,7.11,17394,Industrial
+Marathahalli Junction Sector B,Marathahalli Ward,12.95166,77.71655,43.31,0.099,0.495,5.65,18285,Commercial
+Marathahalli Junction Sector C,Marathahalli Ward,12.946,77.71114,41.43,0.119,0.551,6.47,18064,Industrial
+Marathahalli Junction Sector D,Marathahalli Ward,12.94636,77.70918,42.72,-0.013,0.593,1.19,18745,Commercial
+Marathahalli Junction Sector E,Marathahalli Ward,12.95692,77.68304,40.03,0.123,0.532,6.62,19009,Industrial
+Marathahalli Junction Sector F,Marathahalli Ward,12.96367,77.68551,44.07,0.077,0.488,4.77,18855,Industrial
+Marathahalli Junction Sector G,Marathahalli Ward,12.95226,77.6858,41.23,0.023,0.542,2.62,19088,Commercial
+Marathahalli Junction Sector H,Marathahalli Ward,12.95702,77.69117,43.71,-0.009,0.579,1.32,17905,Commercial
+Bellandur EcoSpace,Bellandur Ward,12.9326,77.6726,41.9,0.07,0.5,6.0,16800,Commercial
+Bellandur EcoSpace Sector A,Bellandur Ward,12.93339,77.68927,43.38,0.139,0.547,8.75,17321,Commercial
+Bellandur EcoSpace Sector B,Bellandur Ward,12.94286,77.6652,41.67,0.062,0.483,5.68,16852,Commercial
+Bellandur EcoSpace Sector C,Bellandur Ward,12.9345,77.65871,40.76,0.075,0.487,6.21,17498,Commercial
+Bellandur EcoSpace Sector D,Bellandur Ward,12.92561,77.67251,43.09,0.065,0.522,5.82,16639,Industrial
+Bellandur EcoSpace Sector E,Bellandur Ward,12.94834,77.67477,42.23,0.113,0.456,7.72,16745,Commercial
+Bellandur EcoSpace Sector F,Bellandur Ward,12.93546,77.66678,42.31,0.056,0.444,5.43,17371,Commercial
+Bellandur EcoSpace Sector G,Bellandur Ward,12.93645,77.67397,42.02,0.049,0.533,5.16,16370,Commercial
+Bellandur EcoSpace Sector H,Bellandur Ward,12.93662,77.66675,41.1,0.066,0.441,5.83,16287,Commercial
+Electronic City Phase 1,Electronic City Ward,12.8466,77.6716,42.5,0.07,0.49,5.8,12500,Commercial
+Electronic City Phase 1 Sector A,Electronic City Ward,12.83988,77.65907,43.79,0.097,0.484,6.88,12202,Commercial
+Electronic City Phase 1 Sector B,Electronic City Ward,12.84215,77.66317,44.02,0.108,0.452,7.31,13455,Commercial
+Electronic City Phase 1 Sector C,Electronic City Ward,12.83608,77.66535,40.7,0.074,0.519,5.95,11552,Commercial
+Electronic City Phase 1 Sector D,Electronic City Ward,12.8391,77.66526,43.44,-0.002,0.533,2.93,13127,Industrial
+Electronic City Phase 1 Sector E,Electronic City Ward,12.83226,77.66551,40.42,0.128,0.449,8.12,12340,Commercial
+Electronic City Phase 1 Sector F,Electronic City Ward,12.85595,77.65861,44.63,-0.006,0.492,2.75,13006,Commercial
+Electronic City Phase 1 Sector G,Electronic City Ward,12.84371,77.67938,43.41,-0.005,0.494,2.78,12416,Industrial
+Electronic City Phase 1 Sector H,Electronic City Ward,12.84432,77.67574,44.38,0.087,0.425,6.48,11549,Commercial
+KR Puram Station,KR Puram Ward,13.0196,77.6966,41.2,0.1,0.44,8.5,15600,Commercial
+KR Puram Sector A,KR Puram Ward,13.02383,77.69584,39.1,0.092,0.492,8.17,14698,Commercial
+KR Puram Sector B,KR Puram Ward,13.012,77.70597,42.34,0.057,0.45,6.78,14846,Industrial
+KR Puram Sector C,KR Puram Ward,13.02401,77.69774,40.17,0.084,0.373,7.87,15086,Commercial
+KR Puram Sector D,KR Puram Ward,13.02436,77.69728,40.17,0.086,0.463,7.94,15285,Commercial
+KR Puram Sector E,KR Puram Ward,13.02428,77.69846,41.99,0.055,0.406,6.69,14755,Industrial
+KR Puram Sector F,KR Puram Ward,13.01909,77.70351,43.39,0.116,0.484,9.13,15471,Commercial
+KR Puram Sector G,KR Puram Ward,13.02259,77.71348,42.4,0.028,0.51,5.62,16554,Commercial
+KR Puram Sector H,KR Puram Ward,13.02622,77.70043,40.58,0.088,0.451,8.01,14812,Commercial
+Hebbal Flyover Core,Hebbal Ward,13.0366,77.5896,39.4,0.11,0.4,11.2,13400,Commercial
+Hebbal Flyover Sector A,Hebbal Ward,13.03737,77.58097,41.18,0.067,0.411,9.47,13627,Commercial
+Hebbal Flyover Sector B,Hebbal Ward,13.03586,77.58645,41.59,0.189,0.433,14.35,14151,Commercial
+Hebbal Flyover Sector C,Hebbal Ward,13.02795,77.60121,40.42,0.1,0.356,10.81,12753,Commercial
+Hebbal Flyover Sector D,Hebbal Ward,13.04481,77.5968,37.94,0.171,0.458,13.62,12954,Industrial
+Hebbal Flyover Sector E,Hebbal Ward,13.03446,77.59692,40.92,0.148,0.453,12.73,13406,Commercial
+Hebbal Flyover Sector F,Hebbal Ward,13.02556,77.57667,37.84,0.06,0.399,9.2,13323,Commercial
+Hebbal Flyover Sector G,Hebbal Ward,13.05357,77.59236,38.44,0.069,0.349,9.56,13098,Commercial
+Hebbal Flyover Sector H,Hebbal Ward,13.03377,77.58071,40.59,0.141,0.336,12.46,13691,Commercial
+Yelahanka New Town,Yelahanka Ward,13.0696,77.5796,36.8,0.2,0.28,18.4,11200,Residential
+Yelahanka New Town Sector A,Yelahanka Ward,13.05832,77.5796,38.51,0.154,0.295,16.55,11830,Residential
+Yelahanka New Town Sector B,Yelahanka Ward,13.05343,77.58096,36.15,0.138,0.276,15.92,11337,Residential
+Yelahanka New Town Sector C,Yelahanka Ward,13.07486,77.58777,38.35,0.123,0.291,15.31,11778,Residential
+Yelahanka New Town Sector D,Yelahanka Ward,13.06678,77.56914,38.04,0.163,0.347,16.92,11267,Residential
+Yelahanka New Town Sector E,Yelahanka Ward,13.07846,77.56795,36.57,0.212,0.267,18.89,11676,Residential
+Yelahanka New Town Sector F,Yelahanka Ward,13.07775,77.5772,38.71,0.151,0.33,16.44,12121,Residential
+Yelahanka New Town Sector G,Yelahanka Ward,13.06016,77.57132,38.02,0.219,0.262,19.15,10901,Residential
+Yelahanka New Town Sector H,Yelahanka Ward,13.06718,77.58824,36.38,0.219,0.33,19.17,10346,Residential
+Peenya Industrial Area,Peenya Ward,13.0276,77.5186,45.8,0.02,0.65,2.1,6500,Industrial
+Peenya Industrial Area Sector A,Peenya Ward,13.0275,77.51331,47.61,0.064,0.615,3.84,7179,Commercial
+Peenya Industrial Area Sector B,Peenya Ward,13.02429,77.53605,44.64,0.085,0.66,4.72,6659,Commercial
+Peenya Industrial Area Sector C,Peenya Ward,13.02489,77.51393,46.14,-0.014,0.62,0.74,7476,Industrial
+Peenya Industrial Area Sector D,Peenya Ward,13.01797,77.51958,44.1,-0.045,0.584,0.0,6095,Commercial
+Peenya Industrial Area Sector E,Peenya Ward,13.02249,77.50192,44.01,-0.019,0.62,0.54,6705,Commercial
+Peenya Industrial Area Sector F,Peenya Ward,13.03174,77.51709,47.48,-0.044,0.625,0.0,6922,Industrial
+Peenya Industrial Area Sector G,Peenya Ward,13.01663,77.51456,47.41,-0.027,0.653,0.23,5931,Industrial
+Peenya Industrial Area Sector H,Peenya Ward,13.02408,77.53036,46.56,-0.024,0.698,0.32,5613,Commercial
+Rajajinagar Sector,Rajajinagar Ward,12.9966,77.5496,42.4,0.06,0.58,4.5,22400,Industrial
+Rajajinagar Sector Sector A,Rajajinagar Ward,13.00628,77.55193,43.55,0.096,0.592,5.93,22691,Commercial
+Rajajinagar Sector Sector B,Rajajinagar Ward,12.99478,77.54335,41.54,0.048,0.53,4.02,22230,Commercial
+Rajajinagar Sector Sector C,Rajajinagar Ward,12.99466,77.5536,41.54,0.06,0.597,4.51,22728,Commercial
+Rajajinagar Sector Sector D,Rajajinagar Ward,13.00106,77.5379,43.12,0.106,0.52,6.33,22290,Commercial
+Rajajinagar Sector Sector E,Rajajinagar Ward,13.00631,77.54034,44.35,-0.001,0.559,2.06,22416,Industrial
+Rajajinagar Sector Sector F,Rajajinagar Ward,12.99578,77.56515,41.6,0.064,0.521,4.67,22813,Commercial
+Rajajinagar Sector Sector G,Rajajinagar Ward,13.00068,77.55653,42.38,0.049,0.518,4.07,23352,Industrial
+Rajajinagar Sector Sector H,Rajajinagar Ward,13.0032,77.55244,41.73,0.108,0.608,6.44,21588,Commercial
+Malleshwaram 18th Cross,Malleshwaram Ward,13.0036,77.5666,33.5,0.32,0.22,31.2,24800,Residential
+Malleshwaram 18th Cross Sector A,Malleshwaram Ward,13.01151,77.57292,34.08,0.248,0.269,28.3,25570,Residential
+Malleshwaram 18th Cross Sector B,Malleshwaram Ward,13.01194,77.57921,35.68,0.4,0.153,34.38,24024,Residential
+Malleshwaram 18th Cross Sector C,Malleshwaram Ward,13.00642,77.56091,32.63,0.282,0.269,29.7,25013,Residential
+Malleshwaram 18th Cross Sector D,Malleshwaram Ward,12.98704,77.56515,31.67,0.4,0.151,34.39,24473,Residential
+Malleshwaram 18th Cross Sector E,Malleshwaram Ward,12.99219,77.56156,33.94,0.306,0.205,30.64,25568,Residential
+Malleshwaram 18th Cross Sector F,Malleshwaram Ward,13.01027,77.5639,32.44,0.302,0.257,30.49,24375,Residential
+Malleshwaram 18th Cross Sector G,Malleshwaram Ward,12.99974,77.56524,34.01,0.247,0.193,28.27,25199,Residential
+Malleshwaram 18th Cross Sector H,Malleshwaram Ward,13.00107,77.55983,33.99,0.35,0.161,32.4,25394,Residential
+Sadashivanagar Canopy,Sankey Tank Ward,13.0096,77.5746,31.8,0.44,0.12,43.5,10500,Residential
+Sadashivanagar Canopy Sector A,Sankey Tank Ward,12.99267,77.57756,31.97,0.417,0.14,42.58,10715,Residential
+Sadashivanagar Canopy Sector B,Sankey Tank Ward,13.00823,77.58749,31.32,0.435,0.163,43.31,9853,Residential
+Sadashivanagar Canopy Sector C,Sankey Tank Ward,13.00136,77.56642,33.47,0.463,0.056,60.0,973,Park
+Sadashivanagar Canopy Sector D,Sankey Tank Ward,13.02596,77.57903,30.43,0.477,0.095,60.0,1056,Park
+Sadashivanagar Canopy Sector E,Sankey Tank Ward,13.00753,77.58118,33.95,0.429,0.073,43.06,10612,Residential
+Sadashivanagar Canopy Sector F,Sankey Tank Ward,13.00855,77.59039,33.17,0.427,0.109,42.99,9578,Residential
+Sadashivanagar Canopy Sector G,Sankey Tank Ward,13.00303,77.59066,33.19,0.428,0.1,43.02,10146,Residential
+Sadashivanagar Canopy Sector H,Sankey Tank Ward,13.01361,77.57465,33.31,0.413,0.087,42.43,10562,Residential
+Cubbon Park Arboretum,Sudhamanagar Ward,12.9756,77.5936,25.8,0.74,-0.32,82.4,250,Park
+Cubbon Park Arboretum Sector A,Sudhamanagar Ward,12.96934,77.59065,27.15,0.728,-0.374,81.94,100,Park
+Cubbon Park Arboretum Sector B,Sudhamanagar Ward,12.98951,77.59321,26.63,0.804,-0.252,84.98,118,Park
+Cubbon Park Arboretum Sector C,Sudhamanagar Ward,12.99117,77.591,25.53,0.795,-0.284,84.59,100,Park
+Cubbon Park Arboretum Sector D,Sudhamanagar Ward,12.97024,77.59958,27.04,0.751,-0.358,82.82,100,Park
+Cubbon Park Arboretum Sector E,Sudhamanagar Ward,12.96523,77.60759,23.83,0.726,-0.341,81.85,100,Park
+Cubbon Park Arboretum Sector F,Sudhamanagar Ward,12.98824,77.59776,26.42,0.679,-0.307,79.95,100,Park
+Cubbon Park Arboretum Sector G,Sudhamanagar Ward,12.97278,77.59199,27.58,0.731,-0.297,82.06,100,Park
+Cubbon Park Arboretum Sector H,Sudhamanagar Ward,12.97921,77.59344,24.35,0.739,-0.368,82.34,100,Park
+Lalbagh Botanical Lake,Lalbagh Ward,12.9466,77.5966,26.4,0.71,-0.28,78.5,300,Park
+Lalbagh Botanical Lake Sector A,Lalbagh Ward,12.93653,77.5823,27.58,0.787,-0.22,81.6,117,Park
+Lalbagh Botanical Lake Sector B,Lalbagh Ward,12.93508,77.6051,25.81,0.654,-0.287,76.24,100,Park
+Lalbagh Botanical Lake Sector C,Lalbagh Ward,12.94792,77.60307,28.12,0.702,-0.313,78.2,118,Park
+Lalbagh Botanical Lake Sector D,Lalbagh Ward,12.95652,77.58658,27.62,0.694,-0.334,77.85,100,Park
+Lalbagh Botanical Lake Sector E,Lalbagh Ward,12.94465,77.60838,27.63,0.71,-0.285,78.5,100,Park
+Lalbagh Botanical Lake Sector F,Lalbagh Ward,12.94035,77.59866,25.74,0.703,-0.34,78.22,100,Park
+Lalbagh Botanical Lake Sector G,Lalbagh Ward,12.93695,77.60985,28.03,0.772,-0.314,80.98,100,Park
+Lalbagh Botanical Lake Sector H,Lalbagh Ward,12.9436,77.59066,27.98,0.79,-0.322,81.68,129,Park
+Jayanagar 4th Block,Jayanagar Ward,12.9296,77.5826,32.5,0.38,0.16,36.8,21500,Residential
+Jayanagar 4th Block Sector A,Jayanagar Ward,12.92224,77.59719,31.08,0.344,0.166,35.36,22168,Residential
+Jayanagar 4th Block Sector B,Jayanagar Ward,12.92329,77.58839,34.53,0.307,0.213,33.88,22409,Residential
+Jayanagar 4th Block Sector C,Jayanagar Ward,12.93808,77.59614,31.3,0.375,0.196,36.61,22081,Residential
+Jayanagar 4th Block Sector D,Jayanagar Ward,12.93366,77.59276,34.29,0.317,0.118,34.28,20721,Residential
+Jayanagar 4th Block Sector E,Jayanagar Ward,12.92234,77.59087,34.2,0.416,0.144,38.24,22096,Residential
+Jayanagar 4th Block Sector F,Jayanagar Ward,12.93028,77.58632,31.18,0.353,0.201,35.7,22308,Residential
+Jayanagar 4th Block Sector G,Jayanagar Ward,12.92311,77.59783,31.17,0.315,0.095,34.19,21352,Residential
+Jayanagar 4th Block Sector H,Jayanagar Ward,12.93723,77.57408,31.04,0.448,0.123,39.51,20551,Residential
+Banashankari Temple Area,Banashankari Ward,12.9096,77.5366,35.1,0.23,0.29,22.0,23600,Residential
+Banashankari Temple Area Sector A,Banashankari Ward,12.90391,77.54323,35.04,0.2,0.253,20.8,24526,Residential
+Banashankari Temple Area Sector B,Banashankari Ward,12.90306,77.54288,37.11,0.198,0.322,20.73,24532,Residential
+Banashankari Temple Area Sector C,Banashankari Ward,12.9038,77.53776,34.22,0.162,0.321,19.27,23201,Residential
+Banashankari Temple Area Sector D,Banashankari Ward,12.8948,77.5403,33.39,0.274,0.35,23.77,23397,Residential
+Banashankari Temple Area Sector E,Banashankari Ward,12.90064,77.53356,34.43,0.234,0.235,22.14,23936,Residential
+Banashankari Temple Area Sector F,Banashankari Ward,12.89882,77.52365,36.52,0.286,0.284,24.23,23667,Residential
+Banashankari Temple Area Sector G,Banashankari Ward,12.91926,77.53341,37.14,0.183,0.274,20.1,23392,Residential
+Banashankari Temple Area Sector H,Banashankari Ward,12.90641,77.52484,34.49,0.305,0.227,25.02,23374,Residential
+Basavanagudi Heritage Sector,Basavanagudi Ward,12.9396,77.5706,33.2,0.35,0.19,33.6,25400,Residential
+Basavanagudi Heritage Sector Sector A,Basavanagudi Ward,12.93404,77.55551,32.29,0.287,0.148,31.07,26146,Residential
+Basavanagudi Heritage Sector Sector B,Basavanagudi Ward,12.93823,77.56275,31.15,0.422,0.228,36.47,24566,Residential
+Basavanagudi Heritage Sector Sector C,Basavanagudi Ward,12.93172,77.55773,34.0,0.28,0.144,30.79,26320,Residential
+Basavanagudi Heritage Sector Sector D,Basavanagudi Ward,12.92199,77.57016,33.26,0.355,0.199,33.79,25426,Residential
+Basavanagudi Heritage Sector Sector E,Basavanagudi Ward,12.94418,77.56293,34.54,0.311,0.257,32.06,25713,Residential
+Basavanagudi Heritage Sector Sector F,Basavanagudi Ward,12.93601,77.56913,32.64,0.413,0.143,36.12,25674,Residential
+Basavanagudi Heritage Sector Sector G,Basavanagudi Ward,12.93764,77.56684,34.4,0.423,0.199,36.5,25793,Residential
+Basavanagudi Heritage Sector Sector H,Basavanagudi Ward,12.93363,77.57348,32.9,0.397,0.174,35.48,25429,Residential
+Koramangala Commercial Hub,Koramangala Ward,12.9336,77.6226,36.4,0.22,0.36,19.8,21000,Residential
+Koramangala Commercial Hub Sector A,Koramangala Ward,12.94315,77.61966,34.76,0.277,0.408,15.0,21213,Industrial
+Koramangala Commercial Hub Sector B,Koramangala Ward,12.93706,77.61635,35.32,0.209,0.377,19.35,20123,Residential
+Koramangala Commercial Hub Sector C,Koramangala Ward,12.93158,77.6094,35.93,0.167,0.355,17.68,21028,Residential
+Koramangala Commercial Hub Sector D,Koramangala Ward,12.93982,77.6211,35.15,0.142,0.429,15.0,20862,Industrial
+Koramangala Commercial Hub Sector E,Koramangala Ward,12.92957,77.62086,36.35,0.254,0.344,21.14,21298,Residential
+Koramangala Commercial Hub Sector F,Koramangala Ward,12.92888,77.62351,36.79,0.299,0.371,22.95,21517,Residential
+Koramangala Commercial Hub Sector G,Koramangala Ward,12.92553,77.62863,34.22,0.278,0.376,22.11,20444,Residential
+Koramangala Commercial Hub Sector H,Koramangala Ward,12.94572,77.6269,38.01,0.214,0.3,19.56,20267,Residential
+Indiranagar 100ft Rd,Indiranagar Ward,12.9796,77.6396,37.8,0.2,0.38,16.5,19500,Commercial
+Indiranagar 100ft Rd Sector A,Indiranagar Ward,12.9911,77.64005,39.42,0.134,0.405,13.86,19721,Commercial
+Indiranagar 100ft Rd Sector B,Indiranagar Ward,12.99231,77.62952,39.54,0.278,0.332,19.63,19289,Commercial
+Indiranagar 100ft Rd Sector C,Indiranagar Ward,12.96884,77.62762,37.51,0.121,0.364,13.34,19167,Commercial
+Indiranagar 100ft Rd Sector D,Indiranagar Ward,12.98312,77.64335,39.75,0.187,0.404,15.0,18582,Industrial
+Indiranagar 100ft Rd Sector E,Indiranagar Ward,12.99217,77.64905,38.09,0.226,0.444,15.0,20029,Commercial
+Indiranagar 100ft Rd Sector F,Indiranagar Ward,12.9727,77.64335,37.92,0.263,0.411,15.0,19098,Commercial
+Indiranagar 100ft Rd Sector G,Indiranagar Ward,12.99377,77.63856,38.87,0.121,0.347,13.34,19074,Commercial
+Indiranagar 100ft Rd Sector H,Indiranagar Ward,12.96676,77.6409,36.64,0.122,0.391,13.4,19983,Commercial
+HSR Layout Sector 1,HSR Layout Ward,12.9096,77.6466,35.8,0.24,0.28,21.4,18500,Residential
+HSR Layout Sector 1 Sector A,HSR Layout Ward,12.90864,77.64146,35.34,0.277,0.246,22.89,18558,Residential
+HSR Layout Sector 1 Sector B,HSR Layout Ward,12.89995,77.63635,36.31,0.258,0.283,22.11,19173,Residential
+HSR Layout Sector 1 Sector C,HSR Layout Ward,12.90406,77.64207,35.61,0.268,0.232,22.52,18884,Residential
+HSR Layout Sector 1 Sector D,HSR Layout Ward,12.9232,77.64983,33.83,0.225,0.277,20.79,19142,Residential
+HSR Layout Sector 1 Sector E,HSR Layout Ward,12.90923,77.65022,35.57,0.177,0.33,18.89,17934,Residential
+HSR Layout Sector 1 Sector F,HSR Layout Ward,12.90911,77.64171,36.88,0.261,0.256,22.22,19422,Residential
+HSR Layout Sector 1 Sector G,HSR Layout Ward,12.90475,77.65431,36.53,0.275,0.33,22.78,18625,Residential
+HSR Layout Sector 1 Sector H,HSR Layout Ward,12.90158,77.6341,37.45,0.263,0.215,22.32,18371,Residential
+JP Nagar Phase 2,JP Nagar Ward,12.9066,77.5766,33.8,0.32,0.2,29.5,22800,Residential
+JP Nagar Phase 2 Sector A,JP Nagar Ward,12.89823,77.57453,34.92,0.247,0.189,26.57,23732,Residential
+JP Nagar Phase 2 Sector B,JP Nagar Ward,12.9031,77.56449,33.87,0.342,0.231,30.37,23463,Residential
+JP Nagar Phase 2 Sector C,JP Nagar Ward,12.91302,77.5859,33.22,0.265,0.167,27.3,22000,Residential
+JP Nagar Phase 2 Sector D,JP Nagar Ward,12.91886,77.56427,33.97,0.324,0.258,29.67,21836,Residential
+JP Nagar Phase 2 Sector E,JP Nagar Ward,12.91392,77.58626,35.81,0.284,0.256,28.04,23707,Residential
+JP Nagar Phase 2 Sector F,JP Nagar Ward,12.91109,77.56955,32.41,0.383,0.174,32.0,23757,Residential
+JP Nagar Phase 2 Sector G,JP Nagar Ward,12.89975,77.58325,33.24,0.333,0.222,30.03,22460,Residential
+JP Nagar Phase 2 Sector H,JP Nagar Ward,12.89977,77.58894,34.92,0.266,0.178,27.32,22249,Residential
+MG Road Business District,Shantalanagar Ward,12.9726,77.6096,38.6,0.18,0.42,14.2,16200,Commercial
+MG Road Business District Sector A,Shantalanagar Ward,12.96829,77.60362,40.45,0.17,0.366,13.78,16565,Commercial
+MG Road Business District Sector B,Shantalanagar Ward,12.9672,77.60916,38.02,0.242,0.489,15.0,16102,Commercial
+MG Road Business District Sector C,Shantalanagar Ward,12.96868,77.61253,37.46,0.173,0.482,13.91,16709,Commercial
+MG Road Business District Sector D,Shantalanagar Ward,12.97935,77.60703,40.34,0.239,0.468,15.0,15497,Industrial
+MG Road Business District Sector E,Shantalanagar Ward,12.97815,77.59831,37.76,0.251,0.375,17.05,16030,Commercial
+MG Road Business District Sector F,Shantalanagar Ward,12.96774,77.59797,40.36,0.239,0.392,16.57,16478,Commercial
+MG Road Business District Sector G,Shantalanagar Ward,12.96889,77.61687,39.3,0.212,0.483,15.0,16228,Industrial
+MG Road Business District Sector H,Shantalanagar Ward,12.98555,77.60861,38.21,0.198,0.467,14.91,15430,Industrial
+Majestic Bus Station,Gandhinagar Ward,12.9766,77.5736,41.2,0.04,0.54,3.8,28400,Commercial
+Majestic Bus Sector A,Gandhinagar Ward,12.96909,77.57167,39.11,-0.003,0.506,2.07,28042,Commercial
+Majestic Bus Sector B,Gandhinagar Ward,12.97947,77.57575,41.01,-0.021,0.475,1.35,27683,Commercial
+Majestic Bus Sector C,Gandhinagar Ward,12.97732,77.56933,42.64,0.055,0.518,4.38,29123,Commercial
+Majestic Bus Sector D,Gandhinagar Ward,12.9847,77.56998,42.16,0.01,0.485,2.6,28974,Industrial
+Majestic Bus Sector E,Gandhinagar Ward,12.96918,77.56027,40.41,0.079,0.534,5.35,28318,Commercial
+Majestic Bus Sector F,Gandhinagar Ward,12.97077,77.57173,40.29,-0.008,0.514,1.87,28045,Commercial
+Majestic Bus Sector G,Gandhinagar Ward,12.97375,77.58017,39.68,0.077,0.603,5.29,28857,Commercial
+Majestic Bus Sector H,Gandhinagar Ward,12.96914,77.57786,39.5,0.061,0.601,4.62,28043,Commercial
+BTM Layout 2nd Stage,BTM Layout Ward,12.9166,77.6146,36.1,0.22,0.32,20.2,26500,Residential
+BTM Layout 2nd Stage Sector A,BTM Layout Ward,12.91143,77.61088,36.93,0.208,0.372,19.73,25533,Residential
+BTM Layout 2nd Stage Sector B,BTM Layout Ward,12.91519,77.62473,34.41,0.186,0.348,18.85,26812,Residential
+BTM Layout 2nd Stage Sector C,BTM Layout Ward,12.90471,77.6068,37.39,0.294,0.358,23.14,26379,Residential
+BTM Layout 2nd Stage Sector D,BTM Layout Ward,12.92282,77.62991,35.4,0.253,0.252,21.52,26431,Residential
+BTM Layout 2nd Stage Sector E,BTM Layout Ward,12.90804,77.61634,37.47,0.3,0.286,23.39,25741,Residential
+BTM Layout 2nd Stage Sector F,BTM Layout Ward,12.91397,77.61825,37.86,0.261,0.386,21.86,26767,Residential
+BTM Layout 2nd Stage Sector G,BTM Layout Ward,12.90321,77.60626,35.45,0.238,0.319,20.93,26152,Residential
+BTM Layout 2nd Stage Sector H,BTM Layout Ward,12.90307,77.61022,37.97,0.292,0.336,23.09,26537,Residential
+Sarjapur Road Corridor,Sarjapur Ward,12.9196,77.6866,39.5,0.14,0.41,12.8,14200,Residential
+Sarjapur Road Corridor Sector A,Sarjapur Ward,12.9137,77.6976,39.94,0.074,0.38,10.17,14026,Residential
+Sarjapur Road Corridor Sector B,Sarjapur Ward,12.90931,77.679,38.94,0.144,0.461,12.98,14774,Industrial
+Sarjapur Road Corridor Sector C,Sarjapur Ward,12.92343,77.695,39.45,0.159,0.42,13.55,14380,Commercial
+Sarjapur Road Corridor Sector D,Sarjapur Ward,12.91688,77.69853,41.27,0.121,0.371,12.04,14981,Residential
+Sarjapur Road Corridor Sector E,Sarjapur Ward,12.9171,77.67652,39.05,0.196,0.428,15.0,14383,Commercial
+Sarjapur Road Corridor Sector F,Sarjapur Ward,12.9282,77.68164,41.63,0.189,0.434,14.78,14377,Commercial
+Sarjapur Road Corridor Sector G,Sarjapur Ward,12.9211,77.68977,41.68,0.183,0.456,14.5,15090,Commercial
+Sarjapur Road Corridor Sector H,Sarjapur Ward,12.90534,77.67768,40.54,0.168,0.394,13.92,13814,Residential
+Varthur Lake Buffer,Varthur Ward,12.9436,77.7726,29.8,0.35,-0.15,32.5,1100,Water
+Varthur Lake Buffer Sector A,Varthur Ward,12.95248,77.77637,30.11,0.385,-0.151,50.0,1869,Park
+Varthur Lake Buffer Sector B,Varthur Ward,12.9476,77.76836,30.73,0.343,-0.146,50.0,1617,Park
+Varthur Lake Buffer Sector C,Varthur Ward,12.93917,77.76002,30.6,0.381,-0.202,50.0,2018,Park
+Varthur Lake Buffer Sector D,Varthur Ward,12.92986,77.76642,31.29,0.297,-0.109,50.0,616,Park
+Varthur Lake Buffer Sector E,Varthur Ward,12.93874,77.76662,30.64,0.303,-0.151,50.0,1635,Park
+Varthur Lake Buffer Sector F,Varthur Ward,12.93606,77.77887,30.78,0.424,-0.102,50.0,118,Park
+Varthur Lake Buffer Sector G,Varthur Ward,12.95709,77.76637,29.36,0.341,-0.095,50.0,1374,Park
+Varthur Lake Buffer Sector H,Varthur Ward,12.95777,77.77473,30.77,0.315,-0.192,50.0,486,Park
+Hoodi Industrial Area,Hoodi Ward,12.9866,77.7366,43.5,0.04,0.62,3.0,7200,Industrial
+Hoodi Industrial Area Sector A,Hoodi Ward,12.99572,77.72313,44.91,0.065,0.656,4.0,7418,Industrial
+Hoodi Industrial Area Sector B,Hoodi Ward,12.98176,77.73305,44.02,0.039,0.608,2.95,6964,Industrial
+Hoodi Industrial Area Sector C,Hoodi Ward,12.98229,77.7315,41.77,0.018,0.596,2.11,6980,Commercial
+Hoodi Industrial Area Sector D,Hoodi Ward,12.97456,77.7457,42.92,0.043,0.624,3.11,6618,Industrial
+Hoodi Industrial Area Sector E,Hoodi Ward,12.98651,77.73162,44.68,0.045,0.65,3.22,8129,Commercial
+Hoodi Industrial Area Sector F,Hoodi Ward,12.97788,77.74446,42.31,0.023,0.573,2.31,6957,Commercial
+Hoodi Industrial Area Sector G,Hoodi Ward,12.98059,77.72732,45.39,0.045,0.621,3.22,8126,Industrial
+Hoodi Industrial Area Sector H,Hoodi Ward,12.98558,77.73948,45.61,-0.018,0.653,0.67,7912,Commercial
+Nagavara Junction,Nagavara Ward,13.0336,77.6226,40.8,0.12,0.45,10.4,18900,Commercial
+Nagavara Junction Sector A,Nagavara Ward,13.04809,77.6129,41.0,0.111,0.432,10.03,18238,Commercial
+Nagavara Junction Sector B,Nagavara Ward,13.03671,77.60736,42.69,0.104,0.393,9.76,18272,Commercial
+Nagavara Junction Sector C,Nagavara Ward,13.02613,77.62099,40.19,0.147,0.477,11.49,18443,Commercial
+Nagavara Junction Sector D,Nagavara Ward,13.04531,77.62534,41.61,0.12,0.471,10.4,17952,Commercial
+Nagavara Junction Sector E,Nagavara Ward,13.0317,77.61839,41.87,0.075,0.488,8.6,19732,Commercial
+Nagavara Junction Sector F,Nagavara Ward,13.035,77.63367,39.46,0.108,0.468,9.91,19242,Commercial
+Nagavara Junction Sector G,Nagavara Ward,13.02431,77.62321,41.9,0.126,0.449,10.64,18392,Commercial
+Nagavara Junction Sector H,Nagavara Ward,13.03179,77.61192,41.01,0.053,0.428,7.72,17994,Industrial
+RT Nagar Market,RT Nagar Ward,13.0206,77.5966,38.1,0.17,0.38,14.8,24200,Residential
+RT Nagar Market Sector A,RT Nagar Ward,13.03132,77.59045,39.37,0.105,0.419,12.2,24482,Commercial
+RT Nagar Market Sector B,RT Nagar Ward,13.016,77.58625,36.01,0.239,0.324,17.57,24536,Residential
+RT Nagar Market Sector C,RT Nagar Ward,13.01812,77.59872,38.74,0.245,0.351,17.79,25001,Residential
+RT Nagar Market Sector D,RT Nagar Ward,13.01561,77.60653,39.27,0.179,0.315,15.17,23405,Residential
+RT Nagar Market Sector E,RT Nagar Ward,13.02702,77.58399,38.86,0.214,0.387,16.54,23388,Residential
+RT Nagar Market Sector F,RT Nagar Ward,13.03105,77.59313,38.2,0.177,0.427,15.0,24705,Commercial
+RT Nagar Market Sector G,RT Nagar Ward,13.02455,77.58551,38.81,0.194,0.387,15.75,24315,Residential
+RT Nagar Market Sector H,RT Nagar Ward,13.02663,77.58138,39.8,0.109,0.388,12.38,25189,Residential
+Kengeri Satellite Town,Kengeri Ward,12.9036,77.4796,36.2,0.2,0.3,17.5,15400,Residential
+Kengeri Satellite Town Sector A,Kengeri Ward,12.9184,77.4736,37.51,0.171,0.35,16.34,14496,Residential
+Kengeri Satellite Town Sector B,Kengeri Ward,12.89656,77.46343,35.32,0.22,0.329,18.3,15338,Residential
+Kengeri Satellite Town Sector C,Kengeri Ward,12.90598,77.46258,34.43,0.189,0.254,17.08,15430,Residential
+Kengeri Satellite Town Sector D,Kengeri Ward,12.89331,77.47984,36.91,0.152,0.276,15.57,14891,Residential
+Kengeri Satellite Town Sector E,Kengeri Ward,12.89862,77.48735,34.98,0.245,0.287,19.31,15123,Residential
+Kengeri Satellite Town Sector F,Kengeri Ward,12.90356,77.49264,36.24,0.254,0.256,19.67,16073,Residential
+Kengeri Satellite Town Sector G,Kengeri Ward,12.90063,77.47716,37.32,0.159,0.232,15.86,14577,Residential
+Kengeri Satellite Town Sector H,Kengeri Ward,12.90603,77.4768,34.18,0.215,0.299,18.12,16098,Residential
+Dasarahalli Metro Zone,Dasarahalli Ward,13.0466,77.4996,41.5,0.1,0.48,8.0,8100,Industrial
+Dasarahalli Metro Zone Sector A,Dasarahalli Ward,13.04808,77.51523,39.41,0.17,0.423,10.8,7815,Commercial
+Dasarahalli Metro Zone Sector B,Dasarahalli Ward,13.05429,77.48425,39.89,0.124,0.516,8.96,9047,Industrial
+Dasarahalli Metro Zone Sector C,Dasarahalli Ward,13.04207,77.49803,40.05,0.151,0.441,10.03,7249,Industrial
+Dasarahalli Metro Zone Sector D,Dasarahalli Ward,13.04616,77.49266,39.67,0.043,0.483,5.71,7497,Industrial
+Dasarahalli Metro Zone Sector E,Dasarahalli Ward,13.03866,77.50448,41.7,0.091,0.435,7.62,8572,Commercial
+Dasarahalli Metro Zone Sector F,Dasarahalli Ward,13.05878,77.4975,39.32,0.127,0.504,9.07,7702,Commercial
+Dasarahalli Metro Zone Sector G,Dasarahalli Ward,13.04038,77.50083,43.02,0.051,0.479,6.05,8735,Industrial
+Dasarahalli Metro Zone Sector H,Dasarahalli Ward,13.04387,77.49283,41.39,0.156,0.448,10.23,7891,Commercial
+Yeshwanthpur Rail Terminal,Yeshwanthpur Ward,13.0136,77.5426,42.1,0.08,0.5,7.2,21800,Commercial
+Yeshwanthpur Rail Terminal Sector A,Yeshwanthpur Ward,13.02343,77.54853,40.07,0.148,0.472,9.93,20955,Industrial
+Yeshwanthpur Rail Terminal Sector B,Yeshwanthpur Ward,13.00869,77.55685,42.3,0.147,0.539,9.87,21240,Industrial
+Yeshwanthpur Rail Terminal Sector C,Yeshwanthpur Ward,12.999,77.54571,43.43,0.102,0.526,8.09,22015,Commercial
+Yeshwanthpur Rail Terminal Sector D,Yeshwanthpur Ward,13.01445,77.52717,41.65,0.079,0.433,7.15,21182,Industrial
+Yeshwanthpur Rail Terminal Sector E,Yeshwanthpur Ward,13.01768,77.54169,44.22,0.075,0.445,6.99,20997,Industrial
+Yeshwanthpur Rail Terminal Sector F,Yeshwanthpur Ward,13.02822,77.54573,42.12,0.116,0.515,8.63,22006,Commercial
+Yeshwanthpur Rail Terminal Sector G,Yeshwanthpur Ward,13.01476,77.53254,43.54,0.057,0.511,6.29,22257,Commercial
+Yeshwanthpur Rail Terminal Sector H,Yeshwanthpur Ward,12.99876,77.5415,41.0,0.009,0.546,4.37,21550,Commercial
+Domlur Tech Park,Domlur Ward,12.9636,77.6356,37.5,0.21,0.39,18.2,14100,Commercial
+Domlur Tech Park Sector A,Domlur Ward,12.9592,77.63958,39.14,0.269,0.409,15.0,14682,Industrial
+Domlur Tech Park Sector B,Domlur Ward,12.96581,77.6324,36.66,0.227,0.429,15.0,14244,Industrial
+Domlur Tech Park Sector C,Domlur Ward,12.96831,77.63235,37.69,0.253,0.365,19.94,14796,Commercial
+Domlur Tech Park Sector D,Domlur Ward,12.94867,77.63759,35.46,0.252,0.35,19.86,13702,Commercial
+Domlur Tech Park Sector E,Domlur Ward,12.94798,77.63971,36.83,0.2,0.404,15.0,13782,Industrial
+Domlur Tech Park Sector F,Domlur Ward,12.9701,77.61964,39.33,0.195,0.39,17.58,14445,Commercial
+Domlur Tech Park Sector G,Domlur Ward,12.97283,77.64798,37.33,0.205,0.392,18.0,14058,Commercial
+Domlur Tech Park Sector H,Domlur Ward,12.97729,77.63687,35.73,0.23,0.46,15.0,13720,Commercial
+Ulsoor Lake Promenade,Ulsoor Ward,12.9806,77.6226,27.8,-0.12,-0.4,24.5,950,Water
+Ulsoor Lake Promenade Sector A,Ulsoor Ward,12.9772,77.6347,28.44,-0.107,-0.433,20.0,100,Water
+Ulsoor Lake Promenade Sector B,Ulsoor Ward,12.97836,77.63023,27.89,-0.16,-0.374,20.0,100,Water
+Ulsoor Lake Promenade Sector C,Ulsoor Ward,12.97979,77.61794,26.68,-0.149,-0.399,20.0,100,Water
+Ulsoor Lake Promenade Sector D,Ulsoor Ward,12.97354,77.61683,28.3,-0.152,-0.391,20.0,100,Water
+Ulsoor Lake Promenade Sector E,Ulsoor Ward,12.98035,77.62622,25.82,-0.184,-0.428,20.0,100,Water
+Ulsoor Lake Promenade Sector F,Ulsoor Ward,12.98063,77.61286,27.45,-0.12,-0.439,20.0,100,Water
+Ulsoor Lake Promenade Sector G,Ulsoor Ward,12.98816,77.61585,27.55,-0.055,-0.413,20.0,100,Water
+Ulsoor Lake Promenade Sector H,Ulsoor Ward,12.96784,77.62796,27.47,-0.099,-0.387,20.0,100,Water
+Shivajinagar Market Core,Shivajinagar Ward,12.9836,77.5996,40.2,0.06,0.51,4.8,31200,Commercial
+Shivajinagar Market Sector A,Shivajinagar Ward,12.97604,77.60892,40.56,0.035,0.45,3.81,30892,Commercial
+Shivajinagar Market Sector B,Shivajinagar Ward,12.98359,77.5889,39.24,0.054,0.575,4.57,30815,Industrial
+Shivajinagar Market Sector C,Shivajinagar Ward,12.96607,77.60202,38.71,0.097,0.509,6.28,32059,Commercial
+Shivajinagar Market Sector D,Shivajinagar Ward,12.97066,77.60265,39.14,0.096,0.576,6.23,30348,Industrial
+Shivajinagar Market Sector E,Shivajinagar Ward,12.97857,77.59937,41.37,0.095,0.476,6.19,31588,Commercial
+Shivajinagar Market Sector F,Shivajinagar Ward,12.99138,77.60943,41.09,0.079,0.527,5.56,31764,Industrial
+Shivajinagar Market Sector G,Shivajinagar Ward,12.99846,77.60888,41.49,0.1,0.462,6.4,30745,Industrial
+Shivajinagar Market Sector H,Shivajinagar Ward,12.99295,77.59957,40.41,0.079,0.516,5.54,30615,Industrial
+CV Raman Nagar Complex,CV Raman Nagar Ward,12.9866,77.6766,36.9,0.22,0.33,21.0,19600,Residential
+CV Raman Nagar Complex Sector A,CV Raman Nagar Ward,12.98456,77.68066,36.09,0.215,0.372,20.79,19668,Residential
+CV Raman Nagar Complex Sector B,CV Raman Nagar Ward,12.99923,77.68836,36.61,0.224,0.383,21.17,18862,Residential
+CV Raman Nagar Complex Sector C,CV Raman Nagar Ward,12.99298,77.67781,37.99,0.201,0.343,20.24,19621,Residential
+CV Raman Nagar Complex Sector D,CV Raman Nagar Ward,12.9784,77.6654,38.83,0.221,0.356,21.04,19738,Residential
+CV Raman Nagar Complex Sector E,CV Raman Nagar Ward,12.97919,77.67814,35.39,0.142,0.383,17.88,19454,Residential
+CV Raman Nagar Complex Sector F,CV Raman Nagar Ward,12.99292,77.66503,37.7,0.275,0.301,23.2,19456,Residential
+CV Raman Nagar Complex Sector G,CV Raman Nagar Ward,12.9939,77.67232,37.93,0.285,0.291,23.59,20160,Residential
+CV Raman Nagar Complex Sector H,CV Raman Nagar Ward,12.97139,77.6787,35.8,0.278,0.32,23.33,19419,Residential
+Manyata Tech Park Core,Manyata Ward,13.0396,77.6196,41.2,0.09,0.46,8.0,13900,Commercial
+Manyata Tech Park Sector A,Manyata Ward,13.03192,77.61828,41.57,0.108,0.461,8.74,13430,Commercial
+Manyata Tech Park Sector B,Manyata Ward,13.03616,77.62636,41.24,0.075,0.455,7.39,12910,Commercial
+Manyata Tech Park Sector C,Manyata Ward,13.03885,77.6263,40.64,0.098,0.5,8.32,13189,Commercial
+Manyata Tech Park Sector D,Manyata Ward,13.03202,77.62865,43.32,0.085,0.485,7.82,13161,Commercial
+Manyata Tech Park Sector E,Manyata Ward,13.05284,77.61083,39.32,0.065,0.468,7.0,13504,Industrial
+Manyata Tech Park Sector F,Manyata Ward,13.05087,77.61192,42.44,0.09,0.407,7.99,14508,Industrial
+Manyata Tech Park Sector G,Manyata Ward,13.03501,77.62326,43.01,0.149,0.441,10.38,13781,Commercial
+Manyata Tech Park Sector H,Manyata Ward,13.04298,77.6067,42.4,0.085,0.448,7.8,13775,Commercial
+Outer Ring Road Belt,Devarabeesanahalli Ward,12.9436,77.6796,41.5,0.08,0.48,7.5,16400,Commercial
+Outer Ring Road Belt Sector A,Devarabeesanahalli Ward,12.94642,77.68872,40.76,0.002,0.466,4.38,16685,Commercial
+Outer Ring Road Belt Sector B,Devarabeesanahalli Ward,12.94201,77.68218,41.39,0.157,0.509,10.56,16856,Commercial
+Outer Ring Road Belt Sector C,Devarabeesanahalli Ward,12.95593,77.68844,40.9,0.116,0.461,8.93,15814,Commercial
+Outer Ring Road Belt Sector D,Devarabeesanahalli Ward,12.95279,77.69096,39.95,0.059,0.489,6.65,15910,Commercial
+Outer Ring Road Belt Sector E,Devarabeesanahalli Ward,12.94473,77.66238,43.55,0.094,0.497,8.06,15777,Commercial
+Outer Ring Road Belt Sector F,Devarabeesanahalli Ward,12.95482,77.68846,40.03,0.101,0.546,8.35,16720,Commercial
+Outer Ring Road Belt Sector G,Devarabeesanahalli Ward,12.95154,77.68306,41.96,0.11,0.433,8.71,15526,Industrial
+Outer Ring Road Belt Sector H,Devarabeesanahalli Ward,12.93234,77.66956,43.66,0.016,0.477,4.95,16327,Industrial

@@ -41,6 +41,11 @@ class HotspotPrediction(Base):
     risk_level = Column(String)  # Low, Medium, High, Critical
     growth_prediction = Column(Float)  # Estimated LST growth in 5 years
     land_cover = Column(String)  # Residential, Commercial, Industrial, Park, Water, etc.
+    ward = Column(String, nullable=True)
+    tree_canopy = Column(Float, default=0.0)
+    population_density = Column(Float, default=0.0)
+    humidity = Column(Float, default=0.0)
+    heat_index = Column(Float, default=0.0)
 
     dataset = relationship("UploadDataset", back_populates="hotspots")
     recommendations = relationship("MitigationRecommendation", back_populates="hotspot", cascade="all, delete-orphan")
