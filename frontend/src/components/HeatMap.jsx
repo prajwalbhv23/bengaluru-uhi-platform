@@ -36,6 +36,18 @@ const MapClickHandler = ({ onClick }) => {
   return null;
 };
 
+// Map listener to record bounds and zoom for responsive rendering
+const MapStateListener = ({ onChange }) => {
+  const map = useMapEvents({
+    zoomend: () => onChange(map.getZoom(), map.getBounds()),
+    moveend: () => onChange(map.getZoom(), map.getBounds()),
+  });
+  React.useEffect(() => {
+    onChange(map.getZoom(), map.getBounds());
+  }, []);
+  return null;
+};
+
 const HeatMap = ({ 
   datasetId, 
   selectedPoint, 
@@ -47,9 +59,25 @@ const HeatMap = ({
 }) => {
   const [hotspots, setHotspots] = useState([]);
   const [districts, setDistricts] = useState(null);
+  const [gridCells, setGridCells] = useState([]);
   const [center, setCenter] = useState([12.9716, 77.5946]);
   const [zoom, setZoom] = useState(11.5);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Layer switches
+  const [showGrid, setShowGrid] = useState(true);
+  const [showHotspots, setShowHotspots] = useState(true);
+  const [showDistricts, setShowDistricts] = useState(true);
+
+  // Map state tracking for optimized lazy loading
+  const [currentZoom, setCurrentZoom] = useState(11.5);
+  const [currentBounds, setCurrentBounds] = useState(null);
+
+  const handleMapStateChange = (zoomVal, boundsVal) => {
+    setCurrentZoom(zoomVal);
+    setCurrentBounds(boundsVal);
+  };
 
   useEffect(() => {
     fetchMapData();
@@ -57,14 +85,17 @@ const HeatMap = ({
 
   const fetchMapData = async () => {
     setLoading(true);
+    setError(null);
     try {
-      const [hotspotsRes, districtsRes] = await Promise.all([
+      const [hotspotsRes, districtsRes, gridRes] = await Promise.all([
         mapAPI.getHotspots(datasetId),
-        mapAPI.getDistricts(datasetId)
+        mapAPI.getDistricts(datasetId),
+        mapAPI.getGrid(datasetId)
       ]);
       
       setHotspots(hotspotsRes.data);
       setDistricts(districtsRes.data);
+      setGridCells(gridRes.data);
       
       if (hotspotsRes.data.length > 0) {
         const lats = hotspotsRes.data.map(h => h.latitude);
@@ -75,6 +106,7 @@ const HeatMap = ({
       }
     } catch (e) {
       console.error("Failed to load map data", e);
+      setError("Unable to load spatial layers.");
     } finally {
       setLoading(false);
     }
@@ -90,41 +122,84 @@ const HeatMap = ({
   };
 
   const districtStyle = (feature) => {
-    const lst = feature.properties.lst || 30.0;
-    let fill = '#10b981';
-    if (lst > 40) fill = '#ef4444';
-    else if (lst > 35) fill = '#f97316';
-    else if (lst > 28) fill = '#eab308';
+    const cover = feature.properties.land_cover || feature.properties.type || 'Residential';
+    let fillColor = '#eab308'; // Default Residential -> Yellow
+    let fillOpacity = 0.15;
+    let weight = 1.5;
+    
+    if (cover === 'Park' || cover === 'Forest') {
+      fillColor = '#10b981'; // Emerald Green
+      fillOpacity = 0.35;
+    } else if (cover === 'Water') {
+      fillColor = '#3b82f6'; // Vibrant Blue
+      fillOpacity = 0.45;
+      weight = 2;
+    } else if (cover === 'Industrial') {
+      fillColor = '#f97316'; // Orange-Red
+      fillOpacity = 0.25;
+    } else if (cover === 'Commercial') {
+      fillColor = '#ec4899'; // Pink/Magenta
+      fillOpacity = 0.20;
+    }
     
     return {
-      fillColor: fill,
-      weight: 1.5,
+      fillColor: fillColor,
+      weight: weight,
       opacity: 0.8,
-      color: '#1e293b',
-      fillOpacity: 0.15,
-      dashArray: '3'
+      color: cover === 'Water' ? '#2563eb' : '#475569',
+      fillOpacity: fillOpacity,
+      dashArray: cover === 'Water' ? '0' : '3'
     };
   };
 
+  const getVisibleDistricts = () => {
+    if (!districts || !districts.features) return null;
+    if (!currentBounds) return districts;
+    try {
+      const filteredFeatures = districts.features.filter(feature => {
+        if (!feature.geometry || !feature.geometry.coordinates) return false;
+        const coords = feature.geometry.coordinates[0];
+        return coords.some(coord => {
+          const lat = coord[1];
+          const lon = coord[0];
+          return currentBounds.contains([lat, lon]);
+        });
+      });
+      return {
+        ...districts,
+        features: filteredFeatures
+      };
+    } catch (e) {
+      return districts;
+    }
+  };
+
   const onEachDistrict = (feature, layer) => {
+    const cover = feature.properties.land_cover || feature.properties.type || 'Residential';
+    const tempVal = feature.properties.lst !== undefined && feature.properties.lst !== null ? Number(feature.properties.lst).toFixed(1) : 'N/A';
+    const riskLvl = feature.properties.risk_level || 'Medium';
     layer.bindTooltip(
-      `<strong>${feature.properties.name}</strong><br/>Avg Temp: ${feature.properties.lst.toFixed(1)}°C<br/>NDVI: ${feature.properties.ndvi.toFixed(3)}`,
-      { sticky: true, className: 'glass-panel p-2 text-xs font-semibold text-slate-200 border-slate-800' }
+      `<strong>${feature.properties.name}</strong><br/>
+       <span class="text-slate-400">Class:</span> <span class="font-bold text-slate-200">${cover}</span><br/>
+       <span class="text-slate-400">Temp:</span> <span class="font-bold text-emerald-400">${tempVal}°C</span><br/>
+       <span class="text-slate-400">Risk:</span> <span class="font-bold text-rose-400">${riskLvl}</span>`,
+      { sticky: true, className: 'glass-panel p-2.5 text-xs font-semibold text-slate-200 border-slate-800 bg-slate-950/90 shadow-2xl' }
     );
   };
 
-  // Click handler to identify the nearest hotspot point
+  // Click handler to identify the nearest hotspot or grid cell point
   const handleMapClick = async (latlng) => {
-    if (hotspots.length === 0) return;
+    const searchTarget = gridCells.length > 0 ? gridCells : hotspots;
+    if (searchTarget.length === 0) return;
     
     let nearest = null;
     let minDist = Infinity;
     
-    for (const h of hotspots) {
-      const dist = Math.pow(h.latitude - latlng.lat, 2) + Math.pow(h.longitude - latlng.lng, 2);
+    for (const item of searchTarget) {
+      const dist = Math.pow(item.latitude - latlng.lat, 2) + Math.pow(item.longitude - latlng.lng, 2);
       if (dist < minDist) {
         minDist = dist;
-        nearest = h;
+        nearest = item;
       }
     }
     
@@ -141,7 +216,12 @@ const HeatMap = ({
           lst: nearest.lst,
           ndvi: nearest.ndvi,
           ndbi: nearest.ndbi,
-          land_cover: nearest.land_cover
+          land_cover: nearest.land_cover,
+          tree_canopy: nearest.tree_canopy,
+          population_density: nearest.population_density,
+          humidity: nearest.humidity,
+          heat_index: nearest.heat_index,
+          ward: nearest.ward
         });
         setCustomRecs(response.data);
       } catch (e) {
@@ -168,6 +248,15 @@ const HeatMap = ({
     return Math.max(tempC, Math.round(hiC * 10) / 10);
   };
 
+  const getCellRadius = (z) => {
+    if (z >= 15) return 32;
+    if (z >= 14) return 25;
+    if (z >= 13) return 18;
+    if (z >= 12) return 12;
+    if (z >= 11) return 8;
+    return 5;
+  };
+
   const getPriorityBadgeClass = (priority) => {
     switch (priority) {
       case 'Immediate': return 'bg-red-500/10 text-red-400 border-red-500/20';
@@ -188,7 +277,7 @@ const HeatMap = ({
   return (
     <div className="flex-1 flex flex-col gap-6 p-8 max-h-screen overflow-hidden">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+      <div className="flex flex-col xl:flex-row justify-between xl:items-center gap-4">
         <div>
           <h2 className="text-3xl font-heading font-extrabold tracking-tight">
             Bengaluru GIS Decision Support System
@@ -198,23 +287,46 @@ const HeatMap = ({
           </p>
         </div>
         
-        {/* Color Legend */}
-        <div className="flex gap-4 p-3 bg-slate-900/40 border border-slate-800 rounded-xl text-xs font-semibold self-start md:self-auto">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            <span className="text-slate-300">Critical (&gt;42°C)</span>
+        {/* Layers Toggles & Legend Panel */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex gap-1.5 p-1 bg-slate-900/60 border border-slate-800/80 rounded-xl text-[10px] font-bold">
+            <button 
+              onClick={() => setShowGrid(!showGrid)}
+              className={`px-3 py-1.5 rounded-lg transition-all ${showGrid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-500 hover:text-slate-350'}`}
+            >
+              Grid Heat (IDW)
+            </button>
+            <button 
+              onClick={() => setShowHotspots(!showHotspots)}
+              className={`px-3 py-1.5 rounded-lg transition-all ${showHotspots ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-500 hover:text-slate-350'}`}
+            >
+              Vulnerability Pins
+            </button>
+            <button 
+              onClick={() => setShowDistricts(!showDistricts)}
+              className={`px-3 py-1.5 rounded-lg transition-all ${showDistricts ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-500 hover:text-slate-350'}`}
+            >
+              Wards &amp; Buffers
+            </button>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
-            <span className="text-slate-300">High (35-42°C)</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-            <span className="text-slate-300">Medium (28-35°C)</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <span className="text-slate-300">Low (&lt;28°C)</span>
+
+          <div className="flex gap-3 p-2 bg-slate-900/40 border border-slate-800 rounded-xl text-[10px] font-bold">
+            <div className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+              <span className="text-slate-455">Critical (&gt;41°C)</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+              <span className="text-slate-455">High (35-41°C)</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+              <span className="text-slate-455">Medium (28-35°C)</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+              <span className="text-slate-455">Low (&lt;28°C)</span>
+            </div>
           </div>
         </div>
       </div>
@@ -231,7 +343,24 @@ const HeatMap = ({
             </div>
           )}
 
+          {error && (
+            <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-[1000] flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <ShieldAlert className="w-10 h-10 text-rose-500 animate-pulse" />
+              <div>
+                <p className="text-sm font-bold text-slate-200">Map Server Offline</p>
+                <p className="text-xs text-slate-500 mt-1">{error}</p>
+              </div>
+              <button 
+                onClick={fetchMapData}
+                className="mt-2 px-4 py-2 bg-slate-900 border border-slate-800 hover:border-emerald-500/30 text-xs font-semibold text-slate-300 hover:text-emerald-400 rounded-xl transition-all"
+              >
+                Retry Connection
+              </button>
+            </div>
+          )}
+
           <MapContainer 
+            key={`${center[0]}-${center[1]}-${datasetId}`}
             center={center} 
             zoom={zoom} 
             style={{ height: '100%', width: '100%' }}
@@ -245,17 +374,23 @@ const HeatMap = ({
             {/* Custom Click Listener */}
             <MapClickHandler onClick={handleMapClick} />
 
+            {/* Map State listener to optimize visible cells */}
+            <MapStateListener onChange={handleMapStateChange} />
+
             {/* District Boundaries Wards */}
-            {districts && (
+            {showDistricts && getVisibleDistricts() && (
               <GeoJSON 
-                data={districts} 
+                key={`districts-${datasetId}-${getVisibleDistricts().features.length}`}
+                data={getVisibleDistricts()} 
                 style={districtStyle}
                 onEachFeature={onEachDistrict}
               />
             )}
 
             {/* Pulsing selection circle */}
-            {selectedPoint && (
+            {selectedPoint && 
+             selectedPoint.latitude !== undefined && selectedPoint.latitude !== null && !isNaN(selectedPoint.latitude) &&
+             selectedPoint.longitude !== undefined && selectedPoint.longitude !== null && !isNaN(selectedPoint.longitude) && (
               <CircleMarker
                 center={[selectedPoint.latitude, selectedPoint.longitude]}
                 radius={24}
@@ -267,9 +402,60 @@ const HeatMap = ({
               />
             )}
 
+            {/* Interpolated Grid Heatmap (IDW) */}
+            {showGrid && gridCells.map((cell, idx) => {
+              if (
+                cell.latitude === undefined || cell.latitude === null || isNaN(cell.latitude) ||
+                cell.longitude === undefined || cell.longitude === null || isNaN(cell.longitude)
+              ) {
+                return null;
+              }
+              const inBounds = () => {
+                if (!currentBounds) return true;
+                try {
+                  return currentBounds.contains([cell.latitude, cell.longitude]);
+                } catch (e) {
+                  return true;
+                }
+              };
+              if (!inBounds()) return null;
+              const radius = getCellRadius(currentZoom);
+              return (
+                <CircleMarker
+                  key={`grid-${idx}`}
+                  center={[cell.latitude, cell.longitude]}
+                  radius={radius}
+                  fillColor={getRiskColor(cell.risk_level)}
+                  color={selectedPoint && selectedPoint.latitude === cell.latitude && selectedPoint.longitude === cell.longitude ? "#38bdf8" : "transparent"}
+                  weight={1}
+                  fillOpacity={0.42}
+                  stroke={selectedPoint && selectedPoint.latitude === cell.latitude && selectedPoint.longitude === cell.longitude}
+                  eventHandlers={{
+                    click: () => handleMapClick({ lat: cell.latitude, lng: cell.longitude })
+                  }}
+                  className="leaflet-interactive"
+                />
+              );
+            })}
+
             {/* Hotspots Marker Pins */}
-            {hotspots.map((spot) => {
+            {showHotspots && hotspots.map((spot) => {
+              if (
+                spot.latitude === undefined || spot.latitude === null || isNaN(spot.latitude) ||
+                spot.longitude === undefined || spot.longitude === null || isNaN(spot.longitude)
+              ) {
+                return null;
+              }
               const isSelected = selectedPoint && selectedPoint.id === spot.id;
+              const inBounds = () => {
+                if (!currentBounds) return true;
+                try {
+                  return currentBounds.contains([spot.latitude, spot.longitude]);
+                } catch (e) {
+                  return true;
+                }
+              };
+              if (!inBounds()) return null;
               return (
                 <CircleMarker
                   key={spot.id}
@@ -302,6 +488,11 @@ const HeatMap = ({
                     <h3 className="font-heading font-extrabold text-slate-100 text-lg">
                       {selectedPoint.name}
                     </h3>
+                    {selectedPoint.ward && (
+                      <p className="text-slate-350 text-xs mt-0.5 font-bold uppercase tracking-wider">
+                        {selectedPoint.ward}
+                      </p>
+                    )}
                     <p className="text-slate-400 text-xs mt-1 font-medium flex items-center gap-1.5">
                       <Compass className="w-3.5 h-3.5 text-slate-500" />
                       Lat: {selectedPoint.latitude.toFixed(4)}, Lon: {selectedPoint.longitude.toFixed(4)}
@@ -367,6 +558,74 @@ const HeatMap = ({
                     <div>
                       <span className="text-[9px] text-slate-500 block uppercase font-bold">Built-up (NDBI)</span>
                       <span className="font-extrabold text-slate-200 text-sm">{selectedPoint.ndbi.toFixed(3)}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/30 border border-slate-850 rounded-xl flex items-center gap-3">
+                    <Leaf className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                    <div>
+                      <span className="text-[9px] text-slate-500 block uppercase font-bold">Vegetation Density</span>
+                      <span className="font-extrabold text-slate-200 text-sm">
+                        {Math.round(selectedPoint.vegetation_density || Math.max(0, Math.min(100, (selectedPoint.ndvi + 1) * 50)))}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/30 border border-slate-850 rounded-xl flex items-center gap-3">
+                    <Building className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                    <div>
+                      <span className="text-[9px] text-slate-500 block uppercase font-bold">Built-up Density</span>
+                      <span className="font-extrabold text-slate-200 text-sm">
+                        {Math.round(selectedPoint.built_up_density || Math.max(0, Math.min(100, (selectedPoint.ndbi + 1) * 50)))}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/30 border border-slate-850 rounded-xl flex items-center gap-3">
+                    <Leaf className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                    <div>
+                      <span className="text-[9px] text-slate-500 block uppercase font-bold">Tree Canopy</span>
+                      <span className="font-extrabold text-slate-200 text-sm">
+                        {selectedPoint.tree_canopy ? selectedPoint.tree_canopy.toFixed(1) : '0.0'}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/30 border border-slate-850 rounded-xl flex items-center gap-3">
+                    <Building className="w-5 h-5 text-indigo-400 flex-shrink-0" />
+                    <div>
+                      <span className="text-[9px] text-slate-500 block uppercase font-bold">Pop Density</span>
+                      <span className="font-extrabold text-slate-200 text-sm">
+                        {selectedPoint.population_density ? selectedPoint.population_density.toLocaleString() : '0'}/km²
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/30 border border-slate-850 rounded-xl flex items-center gap-3">
+                    <Activity className="w-5 h-5 text-purple-400 flex-shrink-0" />
+                    <div>
+                      <span className="text-[9px] text-slate-500 block uppercase font-bold">Zone</span>
+                      <span className="font-extrabold text-slate-200 text-sm">{selectedPoint.land_cover || 'Commercial'}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/30 border border-slate-850 rounded-xl flex items-center gap-3">
+                    <TrendingDown className="w-5 h-5 text-rose-450 flex-shrink-0" />
+                    <div>
+                      <span className="text-[9px] text-slate-500 block uppercase font-bold">Growth Prediction</span>
+                      <span className="font-extrabold text-slate-200 text-sm">
+                        +{selectedPoint.growth_5yr ? selectedPoint.growth_5yr.toFixed(2) : (selectedPoint.growth_prediction ? selectedPoint.growth_prediction.toFixed(2) : '1.20')}°C
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/30 border border-slate-850 rounded-xl flex items-center gap-3">
+                    <Flame className="w-5 h-5 text-red-500 flex-shrink-0" />
+                    <div>
+                      <span className="text-[9px] text-slate-500 block uppercase font-bold">Future Temperature</span>
+                      <span className="font-extrabold text-slate-200 text-sm">
+                        {((selectedPoint.lst || 0.0) + (selectedPoint.growth_5yr || selectedPoint.growth_prediction || 1.20)).toFixed(1)}°C
+                      </span>
                     </div>
                   </div>
 

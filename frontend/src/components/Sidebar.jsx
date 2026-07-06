@@ -15,7 +15,6 @@ import {
 const Sidebar = ({ activeTab, setActiveTab, datasetName, isProcessing }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'upload', label: 'Upload Dataset', icon: Upload },
     { id: 'heatmap', label: 'GIS Heat Map', icon: Map },
     { id: 'recommendations', label: 'AI Recommendations', icon: Sparkles },
     { id: 'assistant', label: 'AI Assistant', icon: MessageSquare },

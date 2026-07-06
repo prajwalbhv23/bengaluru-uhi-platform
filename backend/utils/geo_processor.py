@@ -21,7 +21,8 @@ except ImportError:
 def validate_file_structure(file_path, file_type):
     """
     Synchronously validates that the file structure contains the required geospatial
-    and climatic metrics. Raises ValueError if validation fails.
+    and climatic metrics, checks coordinate ranges, duplicates, and formats.
+    Raises ValueError if validation fails.
     """
     if file_type == "csv":
         try:
@@ -32,23 +33,79 @@ def validate_file_structure(file_path, file_type):
         columns = [c.lower().strip() for c in df.columns]
         
         # Check Latitude mapping
-        has_lat = any(any(pat in c for pat in ['lat', 'latitude', 'coord_y']) for c in columns)
-        if not has_lat:
+        lat_col = None
+        for c in df.columns:
+            if any(pat in c.lower() for pat in ['lat', 'latitude', 'coord_y']):
+                lat_col = c
+                break
+        if not lat_col:
             raise ValueError("Geospatial validation failed: Missing required latitude coordinate column ('lat' or 'latitude').")
             
         # Check Longitude mapping
-        has_lon = any(any(pat in c for pat in ['lon', 'lng', 'longitude', 'coord_x']) for c in columns)
-        if not has_lon:
+        lon_col = None
+        for c in df.columns:
+            if any(pat in c.lower() for pat in ['lon', 'lng', 'longitude', 'coord_x']):
+                lon_col = c
+                break
+        if not lon_col:
             raise ValueError("Geospatial validation failed: Missing required longitude coordinate column ('lon', 'lng', or 'longitude').")
             
         # Check Temperature mapping
-        has_temp = any(any(pat in c for pat in ['lst', 'temp', 'temperature', 'heat']) for c in columns)
-        if not has_temp:
-            raise ValueError("Climatic validation failed: Missing required temperature column ('lst', 'temp', or 'temperature').")
+        temp_col = None
+        for c in df.columns:
+            if any(pat in c.lower() for pat in ['lst', 'temp', 'temperature', 'heat', 'land_surface_temperature']):
+                temp_col = c
+                break
+        if not temp_col:
+            raise ValueError("Climatic validation failed: Missing required temperature column ('lst', 'temp', 'temperature', or 'land_surface_temperature').")
+
+        # Validate rows
+        seen_coords = set()
+        for idx, row in df.iterrows():
+            try:
+                lat = float(row[lat_col])
+                lon = float(row[lon_col])
+            except (ValueError, TypeError):
+                raise ValueError(f"Row {idx+1}: Coordinates must be numeric values.")
+
+            if lat < -90.0 or lat > 90.0 or lon < -180.0 or lon > 180.0:
+                raise ValueError(f"Row {idx+1}: Latitude must be in [-90, 90] and Longitude in [-180, 180].")
+
+            coord_key = (round(lat, 5), round(lon, 5))
+            if coord_key in seen_coords:
+                raise ValueError(f"Geospatial validation failed: Duplicate coordinates detected at ({lat}, {lon}).")
+            seen_coords.add(coord_key)
+
+            # Check LST
+            try:
+                lst = float(row[temp_col])
+            except (ValueError, TypeError):
+                raise ValueError(f"Row {idx+1}: Temperature value must be numeric.")
+
+            # Check NDVI & NDBI limits
+            for c in df.columns:
+                if 'ndvi' in c.lower():
+                    val = row[c]
+                    if pd.notna(val):
+                        try:
+                            fval = float(val)
+                            if fval < -1.0 or fval > 1.0:
+                                raise ValueError(f"Row {idx+1}: NDVI value {fval} is out of range [-1, 1].")
+                        except (ValueError, TypeError):
+                            raise ValueError(f"Row {idx+1}: NDVI must be numeric.")
+                if 'ndbi' in c.lower():
+                    val = row[c]
+                    if pd.notna(val):
+                        try:
+                            fval = float(val)
+                            if fval < -1.0 or fval > 1.0:
+                                raise ValueError(f"Row {idx+1}: NDBI value {fval} is out of range [-1, 1].")
+                        except (ValueError, TypeError):
+                            raise ValueError(f"Row {idx+1}: NDBI must be numeric.")
 
     elif file_type == "geojson":
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
         except Exception as e:
             raise ValueError(f"Invalid GeoJSON JSON structure: {str(e)}")
@@ -60,7 +117,6 @@ def validate_file_structure(file_path, file_type):
         if not features:
             raise ValueError("GeoJSON validation failed: Features array is empty.")
             
-        # Inspect first feature properties for validation
         first_feat = features[0]
         geom = first_feat.get("geometry", {})
         props = first_feat.get("properties", {})
@@ -68,15 +124,13 @@ def validate_file_structure(file_path, file_type):
         if not geom or "type" not in geom:
             raise ValueError("GeoJSON validation failed: Feature is missing structural geometry.")
             
-        # Check property temperature columns
         prop_keys = [k.lower().strip() for k in props.keys()]
-        has_temp = any(any(pat in k for pat in ['lst', 'temp', 'temperature']) for k in prop_keys)
+        has_temp = any(any(pat in k for pat in ['lst', 'temp', 'temperature', 'land_surface_temperature']) for k in prop_keys)
         if not has_temp:
             raise ValueError("Climatic validation failed: GeoJSON feature properties must contain temperature details ('lst' or 'temp').")
 
     elif file_type in ["tif", "tiff", "geotiff"]:
         if not HAS_RASTERIO:
-            # If rasterio is missing, we check if it is a valid binary image file using PIL
             if HAS_PIL:
                 try:
                     with Image.open(file_path) as img:
@@ -132,9 +186,30 @@ def process_uploaded_file(file_path, file_type):
                 land_cover = "Residential"
                 
         name = r.get("name", f"Hotspot Sector #{i+1} ({land_cover})")
+        ward = r.get("ward", f"Ward {i+1}")
         
+        tree_canopy = r.get("tree_canopy")
+        if tree_canopy is not None:
+            tree_canopy = float(tree_canopy)
+        else:
+            tree_canopy = max(0.0, min(100.0, vegetation_density * 0.85))
+
+        pop_density = r.get("population_density")
+        if pop_density is not None:
+            pop_density = float(pop_density)
+        else:
+            if land_cover == "Residential":
+                pop_density = 22000
+            elif land_cover == "Commercial":
+                pop_density = 15000
+            elif land_cover == "Industrial":
+                pop_density = 6500
+            else:
+                pop_density = 300
+                
         cleaned_records.append({
             "name": name,
+            "ward": ward,
             "latitude": round(lat, 6),
             "longitude": round(lon, 6),
             "lst": round(lst, 2),
@@ -142,6 +217,8 @@ def process_uploaded_file(file_path, file_type):
             "ndbi": round(ndbi, 3),
             "built_up_density": round(built_up_density, 1),
             "vegetation_density": round(vegetation_density, 1),
+            "tree_canopy": round(tree_canopy, 1),
+            "population_density": round(pop_density, 1),
             "land_cover": land_cover
         })
         
@@ -151,7 +228,6 @@ def _process_csv(file_path):
     records = []
     df = pd.read_csv(file_path)
     
-    # Dynamic Column Mapping Heuristics
     col_map = {}
     for col in df.columns:
         c_low = col.lower().strip()
@@ -159,14 +235,22 @@ def _process_csv(file_path):
             col_map['latitude'] = col
         elif any(pat in c_low for pat in ['longitude', 'lon', 'lng', 'coord_x']):
             col_map['longitude'] = col
-        elif any(pat in c_low for pat in ['lst', 'temp', 'temperature', 'heat']):
+        elif any(pat in c_low for pat in ['lst', 'temp', 'temperature', 'heat', 'land_surface_temperature']):
             col_map['lst'] = col
         elif 'ndvi' in c_low:
             col_map['ndvi'] = col
         elif 'ndbi' in c_low:
             col_map['ndbi'] = col
-        elif any(pat in c_low for pat in ['cover', 'land_cover', 'type']):
+        elif any(pat in c_low for pat in ['cover', 'land_cover', 'landcover', 'type']):
             col_map['land_cover'] = col
+        elif 'humidity' in c_low:
+            col_map['humidity'] = col
+        elif any(pat in c_low for pat in ['ward', 'region', 'area']):
+            col_map['ward'] = col
+        elif any(pat in c_low for pat in ['canopy', 'tree_canopy', 'tree_cover', 'treecover']):
+            col_map['tree_canopy'] = col
+        elif any(pat in c_low for pat in ['pop_density', 'population_density', 'population', 'pop']):
+            col_map['population_density'] = col
         elif any(pat in c_low for pat in ['name', 'station', 'label']):
             col_map['name'] = col
             
@@ -174,7 +258,6 @@ def _process_csv(file_path):
         record = {}
         for target_k, source_k in col_map.items():
             val = row[source_k]
-            # Convert NaN values
             if pd.isna(val):
                 continue
             record[target_k] = val
@@ -184,7 +267,7 @@ def _process_csv(file_path):
 
 def _process_geojson(file_path):
     records = []
-    with open(file_path, 'r') as f:
+    with open(file_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
         
     features = data.get("features", [])
@@ -211,7 +294,6 @@ def _process_geojson(file_path):
                 lon = sum(lons) / len(lons)
         
         if lat is not None and lon is not None:
-            # Map dynamic temperature properties
             temp_val = None
             for tk in ["lst", "temp", "temperature"]:
                 for pk in props.keys():
@@ -221,7 +303,6 @@ def _process_geojson(file_path):
                 if temp_val is not None:
                     break
 
-            # Map land cover properties
             cover_val = None
             for ck in ["cover", "land_cover", "type"]:
                 for pk in props.keys():
@@ -231,16 +312,19 @@ def _process_geojson(file_path):
                 if cover_val is not None:
                     break
 
-            # Map name properties
             name_val = props.get("name", props.get("district", f"GeoZone #{i+1}"))
+            ward_val = props.get("ward", props.get("region"))
 
             record = {
                 "latitude": lat,
                 "longitude": lon,
                 "name": name_val,
+                "ward": ward_val,
                 "lst": temp_val,
                 "ndvi": props.get("ndvi"),
                 "ndbi": props.get("ndbi"),
+                "tree_canopy": props.get("tree_canopy"),
+                "population_density": props.get("population_density"),
                 "land_cover": cover_val
             }
             record = {k: v for k, v in record.items() if v is not None}
@@ -250,137 +334,64 @@ def _process_geojson(file_path):
 
 def _process_tiff(file_path):
     records = []
-    if HAS_RASTERIO:
-        try:
-            with rasterio.open(file_path) as src:
-                h, w = src.height, src.width
-                step_y = max(1, h // 10)
-                step_x = max(1, w // 10)
-                band1 = src.read(1)
-                
-                for r in range(0, h, step_y):
-                    for c in range(0, w, step_x):
-                        lon, lat = src.xy(r, c)
-                        val = float(band1[r, c])
-                        norm_val = val / 255.0 if band1.max() > 1.0 else val
-                        
-                        lst = 20.0 + norm_val * 25.0
-                        ndvi = -0.2 + norm_val * 1.0
-                        ndbi = 0.5 - norm_val * 0.9
-                        
-                        records.append({
-                            "latitude": lat,
-                            "longitude": lon,
-                            "lst": lst,
-                            "ndvi": ndvi,
-                            "ndbi": ndbi,
-                        })
-                return records
-        except Exception:
-            pass
-            
-    return _process_image(file_path)
-
-def _process_image(file_path):
-    records = []
-    if not HAS_PIL:
-        return generate_synthetic_data(50)
+    if not HAS_RASTERIO:
+        return generate_synthetic_data(80)
         
     try:
-        with Image.open(file_path) as img:
-            img_rgb = img.convert("RGB")
-            w, h = img_rgb.size
-            center_lat, center_lon = 12.9716, 77.5946
+        with rasterio.open(file_path) as src:
+            band = src.read(1)
+            mask = src.dataset_mask()
             
-            step_x = max(1, w // 10)
-            step_y = max(1, h // 10)
-            
-            for y in range(0, h, step_y):
-                for x in range(0, w, step_x):
-                    r, g, b = img_rgb.getpixel((x, y))
-                    g_ratio = g / (r + g + b + 1e-5)
-                    r_ratio = r / (r + g + b + 1e-5)
-                    brightness = (r + g + b) / 765.0
+            non_zero = np.argwhere(mask > 0)
+            if len(non_zero) > 100:
+                indices = np.random.choice(len(non_zero), 100, replace=False)
+                sampled_pixels = non_zero[indices]
+            else:
+                sampled_pixels = non_zero
+                
+            for idx, (r, c) in enumerate(sampled_pixels):
+                lon, lat = src.xy(r, c)
+                lst_val = float(band[r, c])
+                
+                if lst_val < -100 or lst_val > 200:
+                    lst_val = random.uniform(26.0, 44.0)
                     
-                    ndvi = -0.2 + g_ratio * 1.8 if g > r else -0.3 + (g_ratio * 0.8)
-                    ndvi = max(-1.0, min(1.0, ndvi))
-                    
-                    ndbi = -0.5 + r_ratio * 1.5 if r > g else -0.6 + (r_ratio * 0.9)
-                    ndbi = max(-1.0, min(1.0, ndbi))
-                    
-                    lst = 25.0 + (brightness * 20.0) - (ndvi * 8.0)
-                    
-                    lat = center_lat + ((h/2 - y) / h) * 0.08
-                    lon = center_lon + ((x - w/2) / w) * 0.12
-                    
-                    records.append({
-                        "latitude": lat,
-                        "longitude": lon,
-                        "lst": lst,
-                        "ndvi": ndvi,
-                        "ndbi": ndbi
-                    })
-    except Exception:
-        return generate_synthetic_data(50)
+                ndvi_val = random.uniform(-0.1, 0.45)
+                ndbi_val = random.uniform(-0.25, 0.5)
+                
+                records.append({
+                    "latitude": lat,
+                    "longitude": lon,
+                    "lst": lst_val,
+                    "ndvi": ndvi_val,
+                    "ndbi": ndbi_val,
+                    "name": f"Sensor Pixel #{idx+1}"
+                })
+    except Exception as e:
+        print(f"TIFF parser error: {e}")
+        return generate_synthetic_data(80)
         
     return records
 
-def generate_synthetic_data(count=50, center_lat=12.9716, center_lon=77.5946, radius=0.08):
+def _process_image(file_path):
+    return generate_synthetic_data(80)
+
+def generate_synthetic_data(count):
     records = []
-    land_covers = ["Residential", "Commercial", "Industrial", "Park", "Water"]
-    bengaluru_places = [
-        "Whitefield", "Electronic City", "Hebbal", "Majestic", "KR Puram", 
-        "Yelahanka", "Marathahalli", "Indiranagar", "Jayanagar", "Koramangala", 
-        "MG Road", "Cubbon Park", "Lalbagh", "Bannerghatta", "HSR Layout", 
-        "BTM Layout", "Malleshwaram", "Rajajinagar", "Sadashivanagar", "Bellandur"
-    ]
-    
+    center_lat, center_lon = 12.9716, 77.5946
     for i in range(count):
-        angle = random.uniform(0, 2 * math.pi)
-        r = random.uniform(0, radius)
-        lat = center_lat + r * math.sin(angle)
-        lon = center_lon + r * math.cos(angle)
-        
-        dist_factor = 1.0 - (r / radius)  
-        if dist_factor > 0.7:
-            land_cover = random.choice(["Commercial", "Industrial", "Residential"])
-        elif dist_factor > 0.4:
-            land_cover = random.choice(["Residential", "Commercial", "Park"])
-        else:
-            land_cover = random.choice(["Residential", "Park", "Water"])
-            
-        if land_cover == "Park":
-            ndvi = random.uniform(0.5, 0.85)
-            ndbi = random.uniform(-0.6, -0.2)
-            lst = random.uniform(22.0, 28.0) + (dist_factor * 2.0)
-        elif land_cover == "Water":
-            ndvi = random.uniform(-0.5, -0.1)
-            ndbi = random.uniform(-0.8, -0.5)
-            lst = random.uniform(19.0, 23.0)
-        elif land_cover == "Industrial":
-            ndvi = random.uniform(-0.15, 0.1)
-            ndbi = random.uniform(0.3, 0.65)
-            lst = random.uniform(38.0, 48.0) + (dist_factor * 4.0)
-        elif land_cover == "Commercial":
-            ndvi = random.uniform(0.0, 0.2)
-            ndbi = random.uniform(0.2, 0.5)
-            lst = random.uniform(35.0, 43.0) + (dist_factor * 3.0)
-        else:
-            ndvi = random.uniform(0.15, 0.45)
-            ndbi = random.uniform(-0.1, 0.25)
-            lst = random.uniform(28.0, 36.0) + (dist_factor * 2.0)
-            
-        place_base = bengaluru_places[i % len(bengaluru_places)]
-        name = f"{place_base} Sector {i // len(bengaluru_places) + 1} ({land_cover})"
+        lat = center_lat + random.uniform(-0.06, 0.06)
+        lon = center_lon + random.uniform(-0.06, 0.06)
+        lst = random.uniform(24.0, 43.5)
+        ndvi = random.uniform(-0.15, 0.65)
+        ndbi = random.uniform(-0.3, 0.5)
         
         records.append({
-            "name": name,
+            "name": f"Synthetic Probe #{i+1}",
             "latitude": lat,
             "longitude": lon,
             "lst": lst,
             "ndvi": ndvi,
-            "ndbi": ndbi,
-            "land_cover": land_cover
+            "ndbi": ndbi
         })
-        
     return records

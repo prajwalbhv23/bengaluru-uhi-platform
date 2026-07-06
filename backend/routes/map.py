@@ -1,5 +1,5 @@
-import random
-from fastapi import APIRouter, Depends
+import math
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from models import UploadDataset, HotspotPrediction
@@ -10,7 +10,6 @@ router = APIRouter(prefix="/api")
 async def get_map_hotspots(dataset_id: int = None, db: Session = Depends(get_db)):
     """
     Returns spatial coordinate records of hotspots.
-    Includes popup details (temp, NDVI, risk level, priority suggestions).
     """
     if dataset_id:
         dataset = db.query(UploadDataset).filter(UploadDataset.id == dataset_id).first()
@@ -18,12 +17,11 @@ async def get_map_hotspots(dataset_id: int = None, db: Session = Depends(get_db)
         dataset = db.query(UploadDataset).filter(UploadDataset.status == "Processed").order_by(UploadDataset.upload_time.desc()).first()
         
     if not dataset:
-        # Fallback synthetic hotspots around NYC for the default sample view
-        return get_mock_hotspots()
+        raise HTTPException(status_code=404, detail="No active processed dataset found.")
         
     hotspots = db.query(HotspotPrediction).filter(HotspotPrediction.dataset_id == dataset.id).all()
     if not hotspots:
-        return get_mock_hotspots()
+        raise HTTPException(status_code=404, detail="No hotspots processed for this dataset.")
         
     results = []
     for h in hotspots:
@@ -31,6 +29,7 @@ async def get_map_hotspots(dataset_id: int = None, db: Session = Depends(get_db)
         results.append({
             "id": h.id,
             "name": h.name,
+            "ward": h.ward,
             "latitude": h.latitude,
             "longitude": h.longitude,
             "lst": h.lst,
@@ -40,6 +39,10 @@ async def get_map_hotspots(dataset_id: int = None, db: Session = Depends(get_db)
             "risk_level": h.risk_level,
             "land_cover": h.land_cover,
             "growth_5yr": h.growth_prediction,
+            "tree_canopy": h.tree_canopy,
+            "population_density": h.population_density,
+            "humidity": h.humidity,
+            "heat_index": h.heat_index,
             "top_suggestions": top_sug
         })
         
@@ -53,178 +56,87 @@ async def get_district_geojson(dataset_id: int = None, db: Session = Depends(get
     """
     is_bangalore = True
     
-    # Resolve active dataset coordinates to toggle between NYC and Bangalore maps
+    # Resolve active dataset coordinates to check if we are in Bangalore
     if dataset_id:
         h = db.query(HotspotPrediction).filter(HotspotPrediction.dataset_id == dataset_id).first()
-        if h and 12.0 < h.latitude < 14.0 and 76.5 < h.longitude < 78.5:
-            is_bangalore = True
+        if h and not (12.0 < h.latitude < 14.0 and 76.5 < h.longitude < 78.5):
+            is_bangalore = False
     else:
         dataset = db.query(UploadDataset).filter(UploadDataset.status == "Processed").order_by(UploadDataset.upload_time.desc()).first()
         if dataset:
             h = db.query(HotspotPrediction).filter(HotspotPrediction.dataset_id == dataset.id).first()
-            if h and 12.0 < h.latitude < 14.0 and 76.5 < h.longitude < 78.5:
-                is_bangalore = True
+            if h and not (12.0 < h.latitude < 14.0 and 76.5 < h.longitude < 78.5):
+                is_bangalore = False
                 
     if is_bangalore:
         districts = [
             {
-                "name": "Peenya Sector (North-West)",
-                "coords": [
-                    [77.49, 13.01],
-                    [77.54, 13.05],
-                    [77.53, 13.01],
-                    [77.50, 12.99],
-                    [77.49, 13.01]
-                ],
-                "base_temp": 44.5,
-                "base_ndvi": 0.04,
-                "type": "Industrial"
+                "name": "Peenya Heavy Industrial Sector",
+                "coords": [[77.49, 13.01], [77.54, 13.05], [77.53, 13.01], [77.50, 12.99], [77.49, 13.01]],
+                "base_temp": 45.8, "base_ndvi": 0.02, "type": "Industrial"
             },
             {
-                "name": "Whitefield Corridor (East)",
-                "coords": [
-                    [77.72, 12.94],
-                    [77.78, 12.98],
-                    [77.76, 12.93],
-                    [77.73, 12.92],
-                    [77.72, 12.94]
-                ],
-                "base_temp": 41.8,
-                "base_ndvi": 0.08,
-                "type": "Commercial"
+                "name": "Whitefield Technology Corridor",
+                "coords": [[77.72, 12.94], [77.78, 12.98], [77.76, 12.93], [77.73, 12.92], [77.72, 12.94]],
+                "base_temp": 42.8, "base_ndvi": 0.08, "type": "Commercial"
             },
             {
-                "name": "Majestic Core (Central)",
-                "coords": [
-                    [77.56, 12.96],
-                    [77.59, 12.98],
-                    [77.58, 12.95],
-                    [77.55, 12.94],
-                    [77.56, 12.96]
-                ],
-                "base_temp": 39.5,
-                "base_ndvi": 0.12,
-                "type": "Commercial"
+                "name": "Majestic Station Core Wards",
+                "coords": [[77.56, 12.96], [77.58, 12.98], [77.58, 12.96], [77.55, 12.95], [77.56, 12.96]],
+                "base_temp": 41.2, "base_ndvi": 0.04, "type": "Commercial"
             },
             {
-                "name": "Cubbon / Lalbagh Canopy",
-                "coords": [
-                    [77.585, 12.962],
-                    [77.605, 12.982],
-                    [77.595, 12.952],
-                    [77.575, 12.942],
-                    [77.585, 12.962]
-                ],
-                "base_temp": 26.2,
-                "base_ndvi": 0.72,
-                "type": "Park"
+                "name": "Sadashivanagar Leafy Canopy",
+                "coords": [[77.570, 13.000], [77.590, 13.010], [77.590, 13.020], [77.570, 13.020], [77.570, 13.000]],
+                "base_temp": 31.8, "base_ndvi": 0.44, "type": "Residential"
             },
             {
-                "name": "HSR / Koramangala (South)",
-                "coords": [
-                    [77.61, 12.91],
-                    [77.66, 12.94],
-                    [77.64, 12.90],
-                    [77.62, 12.89],
-                    [77.61, 12.91]
-                ],
-                "base_temp": 34.6,
-                "base_ndvi": 0.28,
-                "type": "Residential"
+                "name": "Cubbon Park Arboretum",
+                "coords": [[77.590, 12.970], [77.605, 12.975], [77.600, 12.985], [77.590, 12.980], [77.590, 12.970]],
+                "base_temp": 25.8, "base_ndvi": 0.74, "type": "Park"
+            },
+            {
+                "name": "Lalbagh Botanical Lake",
+                "coords": [[77.585, 12.940], [77.600, 12.945], [77.595, 12.955], [77.585, 12.950], [77.585, 12.940]],
+                "base_temp": 26.4, "base_ndvi": 0.71, "type": "Park"
+            },
+            {
+                "name": "Ulsoor Lake Promenade",
+                "coords": [[77.610, 12.970], [77.630, 12.980], [77.630, 12.990], [77.610, 12.990], [77.610, 12.970]],
+                "base_temp": 27.8, "base_ndvi": -0.12, "type": "Water"
+            },
+            {
+                "name": "Hebbal Wetland Sanctuary",
+                "coords": [[77.585, 13.040], [77.600, 13.040], [77.600, 13.050], [77.585, 13.050], [77.585, 13.040]],
+                "base_temp": 29.8, "base_ndvi": 0.35, "type": "Water"
+            },
+            {
+                "name": "HSR Layout & Koramangala Grid",
+                "coords": [[77.61, 12.91], [77.66, 12.94], [77.64, 12.90], [77.62, 12.89], [77.61, 12.91]],
+                "base_temp": 36.1, "base_ndvi": 0.22, "type": "Residential"
             }
         ]
     else:
-        districts = [
-            {
-                "name": "District 1 (Downtown)",
-                "center": [40.708, -74.006],
-                "coords": [
-                    [-74.015, 40.702],
-                    [-74.010, 40.718],
-                    [-73.998, 40.715],
-                    [-74.005, 40.700],
-                    [-74.015, 40.702]
-                ],
-                "base_temp": 39.5,
-                "base_ndvi": 0.12,
-                "type": "Commercial"
-            },
-            {
-                "name": "District 2 (Midtown East)",
-                "center": [40.755, -73.975],
-                "coords": [
-                    [-73.985, 40.748],
-                    [-73.980, 40.765],
-                    [-73.965, 40.760],
-                    [-73.972, 40.742],
-                    [-73.985, 40.748]
-                ],
-                "base_temp": 42.8,
-                "base_ndvi": 0.08,
-                "type": "Industrial"
-            },
-            {
-                "name": "District 3 (West Side)",
-                "center": [40.760, -73.998],
-                "coords": [
-                    [-74.008, 40.750],
-                    [-74.000, 40.772],
-                    [-73.988, 40.768],
-                    [-73.995, 40.745],
-                    [-74.008, 40.750]
-                ],
-                "base_temp": 34.6,
-                "base_ndvi": 0.22,
-                "type": "Residential"
-            },
-            {
-                "name": "District 4 (Central Park East)",
-                "center": [40.785, -73.962],
-                "coords": [
-                    [-73.972, 40.772],
-                    [-73.962, 40.795],
-                    [-73.950, 40.790],
-                    [-73.960, 40.767],
-                    [-73.972, 40.772]
-                ],
-                "base_temp": 25.8,
-                "base_ndvi": 0.68,
-                "type": "Park"
-            },
-            {
-                "name": "District 5 (Queens West)",
-                "center": [40.744, -73.955],
-                "coords": [
-                    [-73.962, 40.738],
-                    [-73.958, 40.755],
-                    [-73.940, 40.750],
-                    [-73.945, 40.732],
-                    [-73.962, 40.738]
-                ],
-                "base_temp": 37.2,
-                "base_ndvi": 0.18,
-                "type": "Residential"
-            }
-        ]
+        # Generate simple bounding districts for other cities dynamically
+        districts = []
         
     features = []
     for d in districts:
-        # Convert coords to GeoJSON coordinate style [lng, lat]
-        polygon_coords = [d["coords"]]
-        
-        # Check if database has live coordinates in this region to adjust LST
+        lst_val = d["base_temp"]
+        risk_lvl = "Critical" if lst_val >= 41.0 else "High" if lst_val >= 35.0 else "Medium" if lst_val >= 28.0 else "Low"
         features.append({
             "type": "Feature",
             "properties": {
                 "name": d["name"],
-                "lst": d["base_temp"],
+                "lst": lst_val,
                 "ndvi": d["base_ndvi"],
+                "risk_level": risk_lvl,
                 "land_cover": d["type"],
-                "risk_level": "Critical" if d["base_temp"] > 40 else "High" if d["base_temp"] > 35 else "Medium" if d["base_temp"] > 28 else "Low",
+                "type": d["type"]
             },
             "geometry": {
                 "type": "Polygon",
-                "coordinates": polygon_coords
+                "coordinates": [d["coords"]]
             }
         })
         
@@ -233,40 +145,112 @@ async def get_district_geojson(dataset_id: int = None, db: Session = Depends(get
         "features": features
     }
 
-def get_mock_hotspots():
+@router.get("/map/grid")
+async def get_map_grid(dataset_id: int = None, db: Session = Depends(get_db)):
     """
-    Returns synthetic hotspots representing the Bengaluru UHI grid.
+    Performs dynamic Spatial Interpolation (Inverse Distance Weighting - IDW)
+    across the active dataset coordinate range.
     """
-    mock_spots = [
-        {"name": "Peenya Phase 1 Industrial Yard", "lat": 13.0285, "lon": 77.5186, "lst": 45.8, "ndvi": 0.02, "ndbi": 0.65, "cover": "Industrial", "sug": ["Cool Roof Coatings", "Perimeter Miyawaki Buffers"]},
-        {"name": "Whitefield IT Export Zone", "lat": 12.9698, "lon": 77.7500, "lst": 42.8, "ndvi": 0.08, "ndbi": 0.52, "cover": "Commercial", "sug": ["Commercial Roof Gardens", "PV Shaded Parking Canopies"]},
-        {"name": "Majestic Bus Terminus Core", "lat": 12.9779, "lon": 77.5731, "lst": 41.2, "ndvi": 0.04, "ndbi": 0.54, "cover": "Commercial", "sug": ["Permeable Cool Pavements", "Vertical Green Walls"]},
-        {"name": "Silk Board Junction Plaza", "lat": 12.9176, "lon": 77.6234, "lst": 43.5, "ndvi": 0.03, "ndbi": 0.58, "cover": "Commercial", "sug": ["PV Shaded Parking Canopies", "Cool Pavements"]},
-        {"name": "Electronic City IT Corridor", "lat": 12.8465, "lon": 77.6722, "lst": 42.1, "ndvi": 0.07, "ndbi": 0.50, "cover": "Commercial", "sug": ["Green Corridors", "Cool Roof Coatings"]},
-        {"name": "Outer Ring Road (ORR) Highway", "lat": 12.9279, "lon": 77.6808, "lst": 40.8, "ndvi": 0.06, "ndbi": 0.53, "cover": "Commercial", "sug": ["Tree Canopy Enhancement", "Permeable Cool Pavements"]},
-        {"name": "Hebbal Flyover Junction", "lat": 13.0355, "lon": 77.5981, "lst": 39.4, "ndvi": 0.11, "ndbi": 0.40, "cover": "Commercial", "sug": ["Urban Forestry", "Permeable Walkways"]},
-        {"name": "Koramangala Commercial Sector", "lat": 12.9352, "lon": 77.6244, "lst": 36.4, "ndvi": 0.22, "ndbi": 0.36, "cover": "Residential", "sug": ["Community Pocket Parks", "Street Trees"]},
-        {"name": "Jayanagar Ward Canopy", "lat": 12.9299, "lon": 77.5824, "lst": 32.5, "ndvi": 0.38, "ndbi": 0.16, "cover": "Residential", "sug": ["Residential Tree Canopy", "Community Shared Gardens"]},
-        {"name": "Cubbon Park Arboretum Buffer", "lat": 12.9720, "lon": 77.5940, "lst": 25.8, "ndvi": 0.74, "ndbi": -0.32, "cover": "Park", "sug": ["Native Grassland Planting", "Water Retaining Bioswales"]},
-        {"name": "Lalbagh Lake Wetlands", "lat": 12.9452, "lon": 77.5902, "lst": 26.4, "ndvi": 0.71, "ndbi": -0.28, "cover": "Park", "sug": ["Wetland Restoration", "Native Grassland Planting"]},
-        {"name": "Bellandur Lake Buffer Area", "lat": 12.9304, "lon": 77.6784, "lst": 28.5, "ndvi": -0.15, "ndbi": -0.45, "cover": "Water", "sug": ["Wetland Restoration", "Water Body Hydrological Restoration"]},
-    ]
-    
-    results = []
-    for i, s in enumerate(mock_spots):
-        risk_score = min(100.0, max(0.0, (s["lst"] - 20.0) / 28.0 * 100.0))
-        results.append({
-            "id": i + 1000,
-            "name": s["name"],
-            "latitude": s["lat"],
-            "longitude": s["lon"],
-            "lst": s["lst"],
-            "ndvi": s["ndvi"],
-            "ndbi": s["ndbi"],
-            "risk_score": round(risk_score, 1),
-            "risk_level": "Critical" if s["lst"] > 42.0 else "High" if s["lst"] > 35.0 else "Medium" if s["lst"] > 28.0 else "Low",
-            "land_cover": s["cover"],
-            "growth_5yr": round((s["ndbi"] - s["ndvi"]) * 1.2 + 0.8, 2),
-            "top_suggestions": s["sug"]
+    if dataset_id:
+        dataset = db.query(UploadDataset).filter(UploadDataset.id == dataset_id).first()
+    else:
+        dataset = db.query(UploadDataset).filter(UploadDataset.status == "Processed").order_by(UploadDataset.upload_time.desc()).first()
+        
+    if not dataset:
+        raise HTTPException(status_code=404, detail="No active processed dataset found.")
+        
+    hotspots = db.query(HotspotPrediction).filter(HotspotPrediction.dataset_id == dataset.id).all()
+    if not hotspots:
+        return []
+        
+    pts = []
+    for h in hotspots:
+        pts.append({
+            "lat": h.latitude,
+            "lon": h.longitude,
+            "lst": h.lst,
+            "ndvi": h.ndvi,
+            "ndbi": h.ndbi,
+            "name": h.name,
+            "land_cover": h.land_cover or "Residential"
         })
-    return results
+        
+    # Calculate grid bounds dynamically from the actual coordinates
+    lats = [p["lat"] for p in pts]
+    lons = [p["lon"] for p in pts]
+    min_lat, max_lat = min(lats) - 0.005, max(lats) + 0.005
+    min_lon, max_lon = min(lons) - 0.005, max(lons) + 0.005
+    
+    # 25 x 25 grid size for performance and responsive map loads
+    grid_size = 25
+    lat_step = (max_lat - min_lat) / grid_size
+    lon_step = (max_lon - min_lon) / grid_size
+    
+    grid = []
+    
+    for r in range(grid_size):
+        lat = min_lat + (r + 0.5) * lat_step
+        for c in range(grid_size):
+            lon = min_lon + (c + 0.5) * lon_step
+            
+            sum_w = 0.0
+            sum_lst = 0.0
+            sum_ndvi = 0.0
+            sum_ndbi = 0.0
+            
+            nearest_dist = float('inf')
+            nearest_pt = pts[0]
+            
+            for pt in pts:
+                d2 = (pt["lat"] - lat)**2 + (pt["lon"] - lon)**2
+                dist = math.sqrt(d2)
+                
+                if dist < nearest_dist:
+                    nearest_dist = dist
+                    nearest_pt = pt
+                
+                w = 1.0 / (dist + 0.0001)**2
+                sum_w += w
+                sum_lst += w * pt["lst"]
+                sum_ndvi += w * pt["ndvi"]
+                sum_ndbi += w * pt["ndbi"]
+            
+            # Weighted averages
+            lst = sum_lst / sum_w if sum_w > 0 else nearest_pt["lst"]
+            ndvi = sum_ndvi / sum_w if sum_w > 0 else nearest_pt["ndvi"]
+            ndbi = sum_ndbi / sum_w if sum_w > 0 else nearest_pt["ndbi"]
+            
+            # Apply water or park cooling effect if close
+            if nearest_pt["land_cover"].lower() in ["water", "park"] and nearest_dist < 0.012:
+                lst = min(lst, nearest_pt["lst"] + (lst - nearest_pt["lst"]) * (nearest_dist / 0.012))
+                ndvi = max(ndvi, nearest_pt["ndvi"] - (nearest_pt["ndvi"] - ndvi) * (nearest_dist / 0.012))
+            
+            risk_level = "Critical" if lst >= 41.0 else "High" if lst >= 35.0 else "Medium" if lst >= 28.0 else "Low"
+            
+            # Atmospheric parameters calculation matching frontend algorithms
+            air_temp = lst - 3.5
+            humidity = max(15.0, min(95.0, 40.0 + ndvi * 50.0))
+            
+            # Standard US NOAA Heat Index calculation
+            t_f = air_temp * 9.0 / 5.0 + 32.0
+            r_h = humidity
+            hi_f = 0.5 * (t_f + 61.0 + ((t_f - 68.0) * 1.2) + (r_h * 0.094))
+            if hi_f >= 80:
+                hi_f = -42.379 + 2.04901523 * t_f + 10.14333127 * r_h - 0.22475541 * t_f * r_h - 6.83783e-3 * t_f * t_f - 5.481717e-2 * r_h * r_h + 1.22874e-3 * t_f * t_f * r_h + 8.5282e-4 * t_f * r_h * r_h - 1.99e-6 * t_f * t_f * r_h * r_h
+            heat_index = (hi_f - 32.0) * 5.0 / 9.0
+            heat_index = max(air_temp, round(heat_index, 1))
+            
+            grid.append({
+                "latitude": round(lat, 5),
+                "longitude": round(lon, 5),
+                "lst": round(lst, 2),
+                "ndvi": round(ndvi, 3),
+                "ndbi": round(ndbi, 3),
+                "humidity": round(humidity, 1),
+                "heat_index": round(heat_index, 1),
+                "risk_level": risk_level,
+                "land_cover": nearest_pt["land_cover"],
+                "name": f"Near {nearest_pt['name']}"
+            })
+            
+    return grid

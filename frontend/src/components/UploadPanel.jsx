@@ -96,7 +96,7 @@ const UploadPanel = ({ onUploadSuccess }) => {
       // Clear success notification
       setTimeout(() => setSuccess(null), 6000);
     } catch (e) {
-      setError(e.response?.data?.detail || "Upload failed. Verify backend server connectivity.");
+      setError(e.response?.data?.detail || "Backend server unavailable.");
     } finally {
       setUploading(false);
       setProgress(0);

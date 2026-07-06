@@ -1,24 +1,73 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.local
+frontend/.env
+backend/.env
+
+# Keep example env files
+!frontend/.env.example
+!backend/.env.example
+
+# =========================
+# Database
+# =========================
+*.db
+*.sqlite3
+
+# =========================
+# Generated Uploads & Data
+# =========================
+backend/data/uploads/
+
+# Ignore generated datasets ONLY if they are recreated automatically.
+# If Bangalore_UHI_Production.csv is required by the project,
+# keep it tracked and remove this line.
+# backend/data/samples/
+
+# =========================
 # Logs
-logs
+# =========================
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# =========================
+# Node / Vite
+# =========================
+node_modules/
+dist/
+dist-ssr/
 
-# Editor directories and files
+# =========================
+# IDE
+# =========================
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
+
+# =========================
+# OS
+# =========================
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db

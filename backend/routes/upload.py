@@ -12,7 +12,9 @@ router = APIRouter(prefix="/api")
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-def process_dataset_background(dataset_id: int, file_path: str, file_type: str, db: Session):
+def process_dataset_background(dataset_id: int, file_path: str, file_type: str):
+    from database import SessionLocal
+    db = SessionLocal()
     try:
         # 1. Parse file and extract features
         records = process_uploaded_file(file_path, file_type)
@@ -36,9 +38,23 @@ def process_dataset_background(dataset_id: int, file_path: str, file_type: str, 
         
         # 3. Save predicted hotspots and recommendations to DB
         for i, pred in enumerate(predictions):
+            # Calculate local humidity and heat index dynamically
+            humidity = max(15.0, min(95.0, 40.0 + pred["ndvi"] * 50.0))
+            air_temp = pred["lst"] - 3.5
+            
+            # NOAA Heat Index formula for Air Temp (Fahrenheit) and Humidity
+            t_f = air_temp * 9.0 / 5.0 + 32.0
+            r_h = humidity
+            hi_f = 0.5 * (t_f + 61.0 + ((t_f - 68.0) * 1.2) + (r_h * 0.094))
+            if hi_f >= 80:
+                hi_f = -42.379 + 2.04901523 * t_f + 10.14333127 * r_h - 0.22475541 * t_f * r_h - 6.83783e-3 * t_f * t_f - 5.481717e-2 * r_h * r_h + 1.22874e-3 * t_f * t_f * r_h + 8.5282e-4 * t_f * r_h * r_h - 1.99e-6 * t_f * t_f * r_h * r_h
+            heat_index = (hi_f - 32.0) * 5.0 / 9.0
+            heat_index = max(air_temp, round(heat_index, 1))
+
             hotspot = HotspotPrediction(
                 dataset_id=dataset_id,
                 name=pred["name"],
+                ward=pred.get("ward"),
                 latitude=pred["latitude"],
                 longitude=pred["longitude"],
                 lst=pred["lst"],
@@ -46,6 +62,10 @@ def process_dataset_background(dataset_id: int, file_path: str, file_type: str, 
                 ndbi=pred["ndbi"],
                 built_up_density=pred["built_up_density"],
                 vegetation_density=pred["vegetation_density"],
+                tree_canopy=pred.get("tree_canopy", 0.0),
+                population_density=pred.get("population_density", 0.0),
+                humidity=round(humidity, 1),
+                heat_index=round(heat_index, 1),
                 risk_score=pred["risk_score"],
                 risk_level=pred["risk_level"],
                 growth_prediction=pred["growth_prediction"],
@@ -61,12 +81,12 @@ def process_dataset_background(dataset_id: int, file_path: str, file_type: str, 
                     hotspot_id=hotspot.id,
                     strategy_name=r.get("strategy_name"),
                     category=r.get("category"),
-                    description=r.get("strategy_name"), # fallback description is name
+                    description=r.get("strategy_name"),
                     confidence_score=r.get("confidence_score", 90.0),
                     temp_reduction=r.get("temp_reduction", 1.5),
-                    cost_est=15.0 if r.get("cost_level") == "Low" else 50.0 if r.get("cost_level") == "Medium" else 150.0, # numeric fallback
-                    env_impact=r.get("severity", "High"), # Severity mapper
-                    carbon_reduction=12.0 if r.get("category") == "Cool Materials" else 25.0, # fallback carbon metric
+                    cost_est=15.0 if r.get("cost_level") == "Low" else 50.0 if r.get("cost_level") == "Medium" else 150.0,
+                    env_impact=r.get("severity", "High"),
+                    carbon_reduction=12.0 if r.get("category") == "Cool Materials" else 25.0,
                     priority_level=r.get("priority_level", "Short Term"),
                     reason=r.get("reason", ""),
                     severity=r.get("severity", "High"),
@@ -106,6 +126,8 @@ def process_dataset_background(dataset_id: int, file_path: str, file_type: str, 
             dataset.status = "Failed"
             db.commit()
         print(f"Background processing error: {e}")
+    finally:
+        db.close()
 
 @router.post("/upload")
 async def upload_file(
@@ -153,8 +175,7 @@ async def upload_file(
         process_dataset_background,
         db_dataset.id,
         file_path,
-        ext,
-        db
+        ext
     )
     
     return {
