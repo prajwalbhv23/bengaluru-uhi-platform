@@ -10,17 +10,19 @@ import {
   AlertCircle,
   FileSpreadsheet,
   FileJson,
-  FileImage
+  FileImage,
+  Lock
 } from 'lucide-react';
 import { uploadAPI, historyAPI } from '../utils/api';
 
-const UploadPanel = ({ onUploadSuccess }) => {
+const UploadPanel = ({ onUploadSuccess, datasetId }) => {
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [history, setHistory] = useState([]);
+  const [showProtectedAlert, setShowProtectedAlert] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -103,8 +105,12 @@ const UploadPanel = ({ onUploadSuccess }) => {
     }
   };
 
-  const handleDelete = async (id, e) => {
+  const handleDelete = async (id, e, isDefault) => {
     e.stopPropagation();
+    if (isDefault) {
+      setShowProtectedAlert(true);
+      return;
+    }
     if (!window.confirm("Delete this dataset and all associated predictions?")) return;
     
     try {
@@ -241,46 +247,70 @@ const UploadPanel = ({ onUploadSuccess }) => {
               </thead>
               <tbody className="divide-y divide-slate-850 font-medium">
                 {history.length > 0 ? (
-                  history.map((item) => (
-                    <tr 
-                      key={item.id} 
-                      className="hover:bg-slate-900/35 transition-colors cursor-pointer group"
-                      onClick={() => onUploadSuccess(item.id)}
-                    >
-                      <td className="p-4 flex items-center gap-3 max-w-xs truncate text-slate-200">
-                        {getFileIcon(item.file_type)}
-                        <span className="truncate" title={item.filename}>{item.filename}</span>
-                      </td>
-                      <td className="p-4 font-mono text-[10px] text-slate-400 uppercase">
-                        {item.file_type}
-                      </td>
-                      <td className="p-4 text-slate-400">
-                        {new Date(item.upload_time).toLocaleString()}
-                      </td>
-                      <td className="p-4 text-slate-300">
-                        {item.records_count || '-'}
-                      </td>
-                      <td className="p-4">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase border ${
-                          item.status === 'Processed' 
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                            : item.status === 'Processing'
-                            ? 'bg-orange-500/10 text-orange-400 border-orange-500/20 animate-pulse'
-                            : 'bg-red-500/10 text-red-400 border-red-500/20'
-                        }`}>
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right">
-                        <button
-                          onClick={(e) => handleDelete(item.id, e)}
-                          className="p-2 text-slate-500 hover:text-red-400 rounded-lg hover:bg-slate-800 transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                  history.map((item) => {
+                    const isProtected = item.is_default || item.filename === "Bangalore_UHI_Production.csv" || item.filename === "Bengaluru_UHI_Production.csv";
+                    return (
+                      <tr 
+                        key={item.id} 
+                        className={`transition-colors cursor-pointer group ${
+                          isProtected 
+                            ? 'bg-emerald-950/5 border-l-2 border-emerald-500/20 hover:bg-emerald-950/10' 
+                            : 'hover:bg-slate-900/35'
+                        }`}
+                        onClick={() => onUploadSuccess(item.id)}
+                      >
+                        <td className="p-4 flex items-center gap-3 max-w-xs truncate text-slate-200">
+                          {getFileIcon(item.file_type)}
+                          <span className="truncate" title={item.filename}>{item.filename}</span>
+                          {isProtected && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/10 text-[9px] font-bold text-emerald-400 border border-emerald-500/25">
+                              🔒 Default Dataset
+                            </span>
+                          )}
+                          {item.id === datasetId && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-cyan-500/10 text-[9px] font-bold text-cyan-400 border border-cyan-500/25">
+                              📍 Active Dataset
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-4 font-mono text-[10px] text-slate-400 uppercase">
+                          {item.file_type}
+                        </td>
+                        <td className="p-4 text-slate-400">
+                          {new Date(item.upload_time).toLocaleString()}
+                        </td>
+                        <td className="p-4 text-slate-300">
+                          {item.records_count || '-'}
+                        </td>
+                        <td className="p-4">
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase border ${
+                            item.status === 'Processed' 
+                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                              : item.status === 'Processing'
+                              ? 'bg-orange-500/10 text-orange-400 border-orange-500/20 animate-pulse'
+                              : 'bg-red-500/10 text-red-400 border-red-500/20'
+                          }`}>
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          {isProtected ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold text-emerald-400/90 rounded-full border border-emerald-500/20 bg-emerald-950/20 select-none">
+                              <Lock className="w-3.5 h-3.5 mr-0.5" />
+                              Protected Dataset
+                            </span>
+                          ) : (
+                            <button
+                              onClick={(e) => handleDelete(item.id, e, isProtected)}
+                              className="p-2 text-slate-500 hover:text-red-400 rounded-lg hover:bg-slate-800 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td colSpan="6" className="p-10 text-center text-slate-500">
@@ -293,6 +323,42 @@ const UploadPanel = ({ onUploadSuccess }) => {
           </div>
         </div>
       </div>
+
+      {/* Protected Dataset warning modal */}
+      <AnimatePresence>
+        {showProtectedAlert && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full flex flex-col gap-4 shadow-2xl relative"
+            >
+              <div className="flex items-center gap-3 text-red-400">
+                <Lock className="w-5 h-5" />
+                <h4 className="text-sm font-bold text-slate-100 uppercase tracking-wider">Default Dataset</h4>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed font-semibold">
+                The Bengaluru demonstration dataset is permanently protected and cannot be deleted.
+              </p>
+              <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                Upload your own datasets if you want to work with custom spatial data.
+              </p>
+              <button 
+                onClick={() => setShowProtectedAlert(false)}
+                className="mt-2 w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-xl text-slate-200 transition-colors"
+              >
+                Close
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

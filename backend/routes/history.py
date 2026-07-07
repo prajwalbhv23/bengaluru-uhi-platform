@@ -1,5 +1,6 @@
 import os
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from database import get_db
 from models import UploadDataset
@@ -22,7 +23,8 @@ async def get_upload_history(db: Session = Depends(get_db)):
             "upload_time": d.upload_time.isoformat(),
             "status": d.status,
             "records_count": d.records_count,
-            "file_path": d.file_path
+            "file_path": d.file_path,
+            "is_default": getattr(d, "is_default", False)
         })
         
     return results
@@ -36,6 +38,13 @@ async def delete_dataset(dataset_id: int, db: Session = Depends(get_db)):
     dataset = db.query(UploadDataset).filter(UploadDataset.id == dataset_id).first()
     if not dataset:
         raise HTTPException(status_code=404, detail="Dataset not found.")
+        
+    # Prevent deletion of system/default datasets
+    if getattr(dataset, "is_default", False) or dataset.filename in ["Bangalore_UHI_Production.csv", "Bengaluru_UHI_Production.csv"]:
+        raise HTTPException(
+            status_code=403,
+            detail="The default Bengaluru dataset is protected and cannot be deleted."
+        )
         
     # Delete file from local disk
     try:

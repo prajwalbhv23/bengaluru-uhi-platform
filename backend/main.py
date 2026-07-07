@@ -18,6 +18,17 @@ try:
 except Exception as e:
     print(f"Auto-seeding database failed: {e}")
 
+# Clear chat history table on startup for temporary session-only conversation
+from database import SessionLocal
+try:
+    db = SessionLocal()
+    db.query(models.ChatMessage).delete()
+    db.commit()
+    print("Chat history cleared on startup.")
+    db.close()
+except Exception as e:
+    print(f"Error clearing chat history on startup: {e}")
+
 app = FastAPI(
     title="Bengaluru Urban Heat Island Intelligence Platform API",
     description="Bengaluru climate intelligence, geospatial ML analytics, and smart city adaptation recommendation server",

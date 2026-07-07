@@ -100,7 +100,7 @@ function App() {
       case 'reports':
         return <Reports datasetId={datasetId} selectedLocation={selectedLocation} />;
       case 'settings':
-        return <Settings onUploadSuccess={handleUploadSuccess} />;
+        return <Settings onUploadSuccess={handleUploadSuccess} datasetId={datasetId} />;
       default:
         return <Dashboard summary={summary} setActiveTab={setActiveTab} selectedLocation={selectedLocation} />;
     }

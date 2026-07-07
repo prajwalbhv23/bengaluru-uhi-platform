@@ -13,7 +13,7 @@ import {
 import { predictAPI } from '../utils/api';
 import UploadPanel from './UploadPanel';
 
-const Settings = ({ onUploadSuccess }) => {
+const Settings = ({ onUploadSuccess, datasetId }) => {
   const [threshold, setThreshold] = useState(35);
   const [estimators, setEstimators] = useState(100);
   const [testSplit, setTestSplit] = useState(20);
@@ -209,7 +209,7 @@ const Settings = ({ onUploadSuccess }) => {
         <p className="text-xs text-slate-400 leading-relaxed font-semibold">
           Ingest advanced geospatial images (GeoTIFF) or CSV coordinate datasets containing temperature, NDVI, NDBI, canopy coverage, and population density indices.
         </p>
-        <UploadPanel onUploadSuccess={onUploadSuccess} />
+        <UploadPanel onUploadSuccess={onUploadSuccess} datasetId={datasetId} />
       </div>
     </div>
   );

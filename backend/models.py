@@ -13,6 +13,7 @@ class UploadDataset(Base):
     status = Column(String, default="Pending")  # Pending, Processing, Processed, Failed
     records_count = Column(Integer, default=0)
     file_path = Column(String)
+    is_default = Column(Boolean, default=False, nullable=False)
     
     # Aggregated metrics for GIS decision-support summary
     mitigation_summary = Column(Text, nullable=True)

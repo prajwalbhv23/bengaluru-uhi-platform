@@ -17,7 +17,11 @@ def seed():
     db: Session = SessionLocal()
     
     # Check if we already have seeded data
-    existing = db.query(models.UploadDataset).filter(models.UploadDataset.filename == "Bangalore_UHI_Production.csv").first()
+    existing = db.query(models.UploadDataset).filter(
+        (models.UploadDataset.filename == "Bangalore_UHI_Production.csv") |
+        (models.UploadDataset.filename == "Bengaluru_UHI_Production.csv") |
+        (models.UploadDataset.is_default == True)
+    ).first()
     if existing:
         print("Database already seeded with Bangalore_UHI_Production.csv.")
         db.close()
@@ -73,6 +77,7 @@ def seed():
         filename="Bangalore_UHI_Production.csv",
         file_type="csv",
         status="Processed",
+        is_default=True,
         records_count=len(predictions),
         file_path=csv_path,
         avg_temp=round(avg_temp, 2),

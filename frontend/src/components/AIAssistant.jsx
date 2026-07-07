@@ -11,7 +11,17 @@ import {
 } from 'lucide-react';
 import { chatAPI } from '../utils/api';
 
+const getOrNewSessionId = () => {
+  let id = sessionStorage.getItem('uhi_chat_session_id');
+  if (!id) {
+    id = `session_${Math.random().toString(36).substring(2, 11)}`;
+    sessionStorage.setItem('uhi_chat_session_id', id);
+  }
+  return id;
+};
+
 const AIAssistant = ({ selectedLocation }) => {
+  const [sessionId, setSessionId] = useState(getOrNewSessionId);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,7 +45,7 @@ const AIAssistant = ({ selectedLocation }) => {
 
   useEffect(() => {
     loadChatHistory();
-  }, []);
+  }, [sessionId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -43,7 +53,7 @@ const AIAssistant = ({ selectedLocation }) => {
 
   const loadChatHistory = async () => {
     try {
-      const response = await chatAPI.getHistory();
+      const response = await chatAPI.getHistory(sessionId);
       setMessages(response.data);
     } catch (e) {
       console.error("Failed to load chat history", e);
@@ -66,7 +76,7 @@ const AIAssistant = ({ selectedLocation }) => {
     setError(null);
 
     try {
-      const response = await chatAPI.sendMessage(query, 'default', selectedLocation);
+      const response = await chatAPI.sendMessage(query, sessionId, selectedLocation);
       const assistantMsg = { role: 'assistant', content: response.data.answer, timestamp: new Date().toISOString() };
       setMessages(prev => [...prev, assistantMsg]);
     } catch (e) {
@@ -79,11 +89,18 @@ const AIAssistant = ({ selectedLocation }) => {
   const handleClearHistory = async () => {
     if (!window.confirm("Clear chat history?")) return;
     try {
-      await chatAPI.clearHistory();
+      await chatAPI.clearHistory(sessionId);
       setMessages([]);
     } catch (e) {
       console.error("Failed to clear chat logs", e);
     }
+  };
+
+  const handleNewChat = () => {
+    const newId = `session_${Math.random().toString(36).substring(2, 11)}`;
+    sessionStorage.setItem('uhi_chat_session_id', newId);
+    setSessionId(newId);
+    setMessages([]);
   };
 
   return (
@@ -100,15 +117,25 @@ const AIAssistant = ({ selectedLocation }) => {
           </p>
         </div>
 
-        {messages.length > 0 && (
+        <div className="flex items-center gap-2">
           <button
-            onClick={handleClearHistory}
-            className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-800 hover:border-red-500/20 hover:bg-red-500/5 text-slate-400 hover:text-red-400 text-xs font-semibold rounded-xl transition-all"
+            onClick={handleNewChat}
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-800 hover:border-emerald-500/20 hover:bg-emerald-500/5 text-slate-400 hover:text-emerald-400 text-xs font-semibold rounded-xl transition-all"
           >
-            <Trash2 className="w-4 h-4" />
-            <span>Clear Logs</span>
+            <Sparkles className="w-4 h-4 text-emerald-400" />
+            <span>New Chat</span>
           </button>
-        )}
+
+          {messages.length > 0 && (
+            <button
+              onClick={handleClearHistory}
+              className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-800 hover:border-red-500/20 hover:bg-red-500/5 text-slate-400 hover:text-red-400 text-xs font-semibold rounded-xl transition-all"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear Logs</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Main Conversation Window */}
